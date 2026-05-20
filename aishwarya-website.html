@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aishwarya International | Health, Wellness & Mentorship</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            line-height: 1.6; color: #333; background: #fff;
+        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+        /* Navigation */
+        nav {
+            background: #fff; padding: 15px 0; border-bottom: 1px solid #eee;
+            position: sticky; top: 0; z-index: 100;
+        }
+        nav .container { display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 24px; font-weight: 700; color: #1a472a; text-decoration: none; }
+        nav ul { display: flex; list-style: none; gap: 30px; }
+        nav a { color: #333; text-decoration: none; font-size: 14px; transition: color 0.3s; }
+        nav a:hover { color: #2d7a4a; }
+        @media (max-width: 768px) {
+            nav ul { gap: 15px; }
+            nav a { font-size: 12px; }
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #1a472a 0%, #2d7a4a 100%);
+            color: #fff; padding: 80px 20px; text-align: center;
+        }
+        .hero h1 { font-size: 48px; margin-bottom: 20px; font-weight: 700; line-height: 1.2; }
+        .hero p {
+            font-size: 20px; margin-bottom: 30px; opacity: 0.95;
+            max-width: 700px; margin-left: auto; margin-right: auto;
+        }
+        .cta-primary {
+            display: inline-block; background: #f4a460; color: #fff;
+            padding: 15px 35px; border-radius: 5px; text-decoration: none;
+            font-weight: 600; font-size: 16px;
+            transition: background 0.3s, transform 0.2s; border: none; cursor: pointer;
+        }
+        .cta-primary:hover { background: #e59050; transform: translateY(-2px); }
+        .cta-secondary {
+            display: inline-block; background: transparent; color: #fff;
+            padding: 15px 35px; border: 2px solid #fff; border-radius: 5px;
+            text-decoration: none; font-weight: 600; font-size: 16px;
+            margin-left: 15px; transition: all 0.3s; cursor: pointer;
+        }
+        .cta-secondary:hover { background: #fff; color: #1a472a; }
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 32px; }
+            .hero p { font-size: 16px; }
+            .cta-secondary { display: block; margin: 15px 0 0 0; }
+        }
+
+        /* Trust Badges */
+        .trust-badges { background: #f9f9f9; padding: 40px 20px; text-align: center; }
+        .badges {
+            display: flex; justify-content: center; gap: 40px;
+            flex-wrap: wrap; max-width: 900px; margin: 0 auto;
+        }
+        .badge { text-align: center; }
+        .badge-number { font-size: 28px; font-weight: 700; color: #2d7a4a; }
+        .badge-label { font-size: 13px; color: #666; margin-top: 5px; }
+
+        /* About Section */
+        .about { padding: 80px 20px; background: #fff; }
+        .about .container { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: center; }
+        .about h2 { font-size: 36px; margin-bottom: 20px; color: #1a472a; line-height: 1.2; }
+        .about p { font-size: 16px; line-height: 1.8; color: #555; margin-bottom: 15px; }
+
+        .about-image-wrapper {
+            position: relative; border-radius: 10px; overflow: hidden;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        }
+        .about-image-wrapper img { width: 100%; height: auto; display: block; }
+        .about-image-caption {
+            position: absolute; bottom: 0; left: 0; right: 0;
+            background: linear-gradient(transparent, rgba(0,0,0,0.8));
+            color: #fff; padding: 40px 20px 20px; font-size: 15px; text-align: center;
+        }
+        .about-image-caption strong { display: block; font-size: 17px; margin-bottom: 4px; }
+        .highlight { color: #2d7a4a; font-weight: 600; }
+
+        @media (max-width: 768px) {
+            .about .container { grid-template-columns: 1fr; }
+            .about h2 { font-size: 28px; }
+        }
+
+        /* Videos Section */
+        .videos {
+            padding: 80px 20px;
+            background: linear-gradient(135deg, #f9f9f9 0%, #f0f8f5 100%);
+        }
+        .videos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px; margin-top: 40px;
+        }
+        .video-card {
+            background: #fff; border-radius: 10px; overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: block; text-decoration: none; color: inherit;
+        }
+        .video-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+        }
+        .video-thumbnail {
+            position: relative; padding-bottom: 56.25%;
+            height: 0; overflow: hidden; background: #000;
+        }
+        .video-thumbnail img {
+            position: absolute; top: 0; left: 0;
+            width: 100%; height: 100%; object-fit: cover; display: block;
+        }
+        .play-button {
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 68px; height: 48px;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.2s;
+        }
+        .video-card:hover .play-button { background: #ff0000; }
+        .play-button::after {
+            content: ''; display: block;
+            border-style: solid;
+            border-width: 11px 0 11px 18px;
+            border-color: transparent transparent transparent #fff;
+            margin-left: 3px;
+        }
+        .youtube-badge {
+            position: absolute; bottom: 10px; right: 10px;
+            background: rgba(0, 0, 0, 0.7); color: #fff;
+            font-size: 11px; padding: 3px 8px; border-radius: 3px;
+            display: flex; align-items: center; gap: 4px;
+        }
+        .video-info { padding: 20px; }
+        .video-info h3 { color: #1a472a; font-size: 17px; margin-bottom: 8px; }
+        .video-info p { color: #666; font-size: 14px; line-height: 1.5; }
+
+        /* Products Section */
+        .products { padding: 80px 20px; background: #f5f5f5; }
+        .section-title { font-size: 36px; text-align: center; margin-bottom: 15px; color: #1a472a; }
+        .section-subtitle {
+            font-size: 18px; text-align: center; color: #666;
+            margin-bottom: 50px; max-width: 600px; margin-left: auto; margin-right: auto;
+        }
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+        .product-card {
+            background: #fff; border-radius: 10px; padding: 30px;
+            text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+        }
+        .product-icon { font-size: 48px; color: #2d7a4a; margin-bottom: 15px; }
+        .product-card h3 { font-size: 20px; margin-bottom: 15px; color: #1a472a; }
+        .product-card p { font-size: 14px; color: #666; line-height: 1.7; }
+
+        /* Opportunity Section */
+        .opportunity {
+            padding: 80px 20px;
+            background: linear-gradient(135deg, #fff 0%, #f0f8f5 100%);
+        }
+        .opportunity .container { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: center; }
+        .opportunity h2 { font-size: 36px; margin-bottom: 20px; color: #1a472a; line-height: 1.2; }
+        .opportunity-list { list-style: none; }
+        .opportunity-list li {
+            padding: 12px 0; font-size: 16px; color: #333;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex; align-items: center;
+        }
+        .opportunity-list li:before {
+            content: "✓"; color: #2d7a4a; font-weight: 700;
+            margin-right: 12px; font-size: 18px;
+        }
+        .income-timeline {
+            background: #fff; border-radius: 10px; padding: 30px;
+            margin-top: 30px; border-left: 4px solid #2d7a4a;
+        }
+        .income-timeline h4 { color: #1a472a; margin-bottom: 15px; }
+        @media (max-width: 768px) {
+            .opportunity .container { grid-template-columns: 1fr; }
+            .opportunity h2 { font-size: 28px; }
+        }
+
+        /* Why Us Section */
+        .why-us { padding: 80px 20px; background: #fff; }
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px; margin-top: 50px;
+        }
+        .feature {
+            background: #f9f9f9; padding: 30px;
+            border-radius: 10px; border-left: 4px solid #f4a460;
+        }
+        .feature-title { font-size: 18px; font-weight: 600; color: #1a472a; margin-bottom: 10px; }
+        .feature-description { font-size: 14px; color: #666; line-height: 1.6; }
+
+        /* Contact Section */
+        .contact {
+            background: linear-gradient(135deg, #1a472a 0%, #2d7a4a 100%);
+            color: #fff; padding: 80px 20px; text-align: center;
+        }
+        .contact h2 { font-size: 36px; margin-bottom: 20px; }
+        .contact p {
+            font-size: 18px; max-width: 600px;
+            margin: 0 auto 30px; opacity: 0.95;
+        }
+        .contact-buttons {
+            display: flex; justify-content: center; gap: 15px;
+            flex-wrap: wrap; margin-top: 30px;
+        }
+        .contact-btn {
+            display: inline-flex; align-items: center; gap: 10px;
+            padding: 15px 28px; background: #fff; color: #1a472a;
+            text-decoration: none; border-radius: 5px;
+            font-weight: 600; font-size: 16px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .contact-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+        .whatsapp-btn { background: #25d366; color: #fff; }
+        .zoom-btn { background: #2D8CFF; color: #fff; }
+        .email-btn { background: #fff; color: #1a472a; }
+
+        /* Footer */
+        footer {
+            background: #1a472a; color: #fff;
+            padding: 40px 20px; text-align: center;
+        }
+        footer p { margin-bottom: 10px; font-size: 14px; }
+        .compliance-note {
+            font-size: 11px; opacity: 0.8;
+            max-width: 800px; margin: 15px auto 0; line-height: 1.6;
+        }
+        .ibo-disclosure {
+            background: rgba(255,255,255,0.1); padding: 20px;
+            border-radius: 8px; max-width: 800px;
+            margin: 20px auto 0; font-size: 12px; line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="container">
+            <a href="#" class="logo">Aishwarya International</a>
+            <ul>
+                <li><a href="#about">About</a></li>
+                <li><a href="#videos">Our Story</a></li>
+                <li><a href="#products">Products</a></li>
+                <li><a href="#opportunity">Opportunity</a></li>
+                <li><a href="#why-us">Why Us</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>Prevention Beats Cure.<br>Build Wellness While Building Wealth.</h1>
+            <p>20 years. 500+ partners. One mission: Help people support their wellness through quality nutrition and build long-term wealth through real mentorship—no hype, no pressure.</p>
+            <div>
+                <a href="#contact" class="cta-primary">Let's Talk</a>
+                <a href="#products" class="cta-secondary">Explore Products</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Trust Badges -->
+    <section class="trust-badges">
+        <div class="container">
+            <div class="badges">
+                <div class="badge">
+                    <div class="badge-number">20+</div>
+                    <div class="badge-label">Years in Business</div>
+                </div>
+                <div class="badge">
+                    <div class="badge-number">500+</div>
+                    <div class="badge-label">Active Partners</div>
+                </div>
+                <div class="badge">
+                    <div class="badge-number">8</div>
+                    <div class="badge-label">Countries</div>
+                </div>
+                <div class="badge">
+                    <div class="badge-number">90</div>
+                    <div class="badge-label">Day Money-Back</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about" id="about">
+        <div class="container">
+            <div>
+                <h2>Why We Started</h2>
+                <p>Losing a beloved family member to a serious illness changed our perspective forever. We realized how much we wished we had known earlier about the importance of nutrition and a healthy lifestyle.</p>
+                <p>That moment sparked our journey. We embraced the principle that <span class="highlight">wellness comes from knowledge, consistency, and access to quality products.</span></p>
+                <p>For the last 20 years, we've built Aishwarya International around helping people take charge of their wellness journey through quality nutrition and a supportive community.</p>
+                <p>Today, we mentor 500+ partners across 8 countries. We provide personalized wellness guidance, quality products, and a culture where people aren't just earning income—they're growing as individuals.</p>
+                <p style="margin-top: 20px; padding-top: 20px; border-top: 2px solid #eee;"><strong>Girish (Senior Director, Big 4 Firm)</strong> & <strong>Chethana</strong><br><span style="font-size:13px;color:#666;">Independent Business Owners</span></p>
+            </div>
+            <div class="about-image-wrapper">
+                <img src="Girish_and_Chethana.jpg" alt="Girish and Chethana - Founders of Aishwarya International" />
+                <div class="about-image-caption">
+                    <strong>Girish & Chethana</strong>
+                    Founders, Aishwarya International
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Videos Section - Clickable thumbnails that open YouTube -->
+    <section class="videos" id="videos">
+        <div class="container">
+            <h2 class="section-title">Get to Know Us</h2>
+            <p class="section-subtitle">Watch these videos to learn more about our journey, our approach, and our mission.</p>
+
+            <div class="videos-grid">
+                <!-- VIDEO 1 -->
+                <a href="https://youtu.be/H1zmr6U2ao4" target="_blank" rel="noopener noreferrer" class="video-card">
+                    <div class="video-thumbnail">
+                        <img src="https://img.youtube.com/vi/H1zmr6U2ao4/hqdefault.jpg" alt="Video 1 thumbnail" loading="lazy" />
+                        <div class="play-button"></div>
+                        <div class="youtube-badge">
+                            <i class="fab fa-youtube" style="color:#ff0000"></i> YouTube
+                        </div>
+                    </div>
+                    <div class="video-info">
+                        <h3>Watch Video 1 ▸</h3>
+                        <p>Click to watch on YouTube. <em>(Title will be updated based on video content)</em></p>
+                    </div>
+                </a>
+
+                <!-- VIDEO 2 -->
+                <a href="https://youtu.be/9xhvldqIUHg" target="_blank" rel="noopener noreferrer" class="video-card">
+                    <div class="video-thumbnail">
+                        <img src="https://img.youtube.com/vi/9xhvldqIUHg/hqdefault.jpg" alt="Video 2 thumbnail" loading="lazy" />
+                        <div class="play-button"></div>
+                        <div class="youtube-badge">
+                            <i class="fab fa-youtube" style="color:#ff0000"></i> YouTube
+                        </div>
+                    </div>
+                    <div class="video-info">
+                        <h3>Watch Video 2 ▸</h3>
+                        <p>Click to watch on YouTube. <em>(Title will be updated based on video content)</em></p>
+                    </div>
+                </a>
+
+                <!-- VIDEO 3 -->
+                <a href="https://youtu.be/rgzuHK51oxw" target="_blank" rel="noopener noreferrer" class="video-card">
+                    <div class="video-thumbnail">
+                        <img src="https://img.youtube.com/vi/rgzuHK51oxw/hqdefault.jpg" alt="Video 3 thumbnail" loading="lazy" />
+                        <div class="play-button"></div>
+                        <div class="youtube-badge">
+                            <i class="fab fa-youtube" style="color:#ff0000"></i> YouTube
+                        </div>
+                    </div>
+                    <div class="video-info">
+                        <h3>Watch Video 3 ▸</h3>
+                        <p>Click to watch on YouTube. <em>(Title will be updated based on video content)</em></p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section class="products" id="products">
+        <div class="container">
+            <h2 class="section-title">Our Featured Products</h2>
+            <p class="section-subtitle">Quality nutritional products from Nutrilite™ — clinically tested with seed-to-supplement traceability.</p>
+            
+            <div class="products-grid">
+                <div class="product-card">
+                    <div class="product-icon">💊</div>
+                    <h3>Double X Multivitamin</h3>
+                    <p>24 essential nutrients. The foundation of daily nutrition. Seed-to-supplement traceability on Nutrilite's certified organic farms.</p>
+                </div>
+                <div class="product-card">
+                    <div class="product-icon">🌾</div>
+                    <h3>Plant Protein</h3>
+                    <p>21g of easily digestible plant protein. Supports daily nutrition needs. Works alongside Omega-3 and Fiber for a complete approach.</p>
+                </div>
+                <div class="product-card">
+                    <div class="product-icon">🐟</div>
+                    <h3>Omega-3</h3>
+                    <p>Quality fish oil supplement. Concentrated formula sourced from sustainable fisheries. Part of a balanced nutritional plan.</p>
+                </div>
+                <div class="product-card">
+                    <div class="product-icon">🥗</div>
+                    <h3>Fiber</h3>
+                    <p>Modern diets often lack adequate fiber. Our Fiber supplement dissolves cleanly and supports daily nutritional needs.</p>
+                </div>
+                <div class="product-card">
+                    <div class="product-icon">💧</div>
+                    <h3>eSpring Water System</h3>
+                    <p>Quality drinking water at home. eSpring filters reduce many impurities while keeping essential minerals.</p>
+                </div>
+                <div class="product-card">
+                    <div class="product-icon">⚡</div>
+                    <h3>XS Power Drinks</h3>
+                    <p>Energy drinks with B vitamins. Popular with fitness enthusiasts and busy professionals worldwide.</p>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 50px;">
+                <p style="color: #666; margin-bottom: 20px;"><strong>A significant portion of our business comes from Nutrilite nutritional products.</strong> These are quality products backed by a 90-day money-back satisfaction guarantee.</p>
+                <a href="#contact" class="cta-primary">Get in Touch for Product Information</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Opportunity Section -->
+    <section class="opportunity" id="opportunity">
+        <div class="container">
+            <div>
+                <h2>Build Wealth Without Leaving Your Job</h2>
+                <p style="font-size: 18px; color: #666; margin-bottom: 20px;">Consistent activity and real mentorship can lead to meaningful side income—building over time.</p>
+
+                <h3 style="color: #1a472a; margin-top: 30px; margin-bottom: 15px;">What Makes This Different:</h3>
+                <ul class="opportunity-list">
+                    <li>You can earn from retail product sales alone</li>
+                    <li>Designed to fit alongside a regular job</li>
+                    <li>Mentorship from experienced business owners</li>
+                    <li>Soft skills development (communication, leadership, financial literacy)</li>
+                    <li>A supportive community, not a quick-fix scheme</li>
+                    <li>20-year proven business model</li>
+                </ul>
+
+                <div class="income-timeline">
+                    <h4>Important: About Income</h4>
+                    <div style="font-size: 13px; color: #555; line-height: 1.7;">
+                        Income from this business depends entirely on individual effort, skill development, and the time invested. <strong>Most independent business owners earn modest amounts</strong>—and many who join earn little or nothing in their first months.
+                        <br><br>
+                        Success requires consistent effort over time. Like any business, results are not guaranteed.
+                        <br><br>
+                        For detailed earnings information, please request our official income disclosure statement.
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div style="background: #fff; border-radius: 10px; padding: 40px; box-shadow: 0 4px 16px rgba(0,0,0,0.1);">
+                    <h3 style="color: #1a472a; margin-bottom: 20px;">What You Actually Do</h3>
+                    <div style="margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #e0e0e0;">
+                        <strong style="color: #2d7a4a;">Share product experiences</strong>
+                        <p style="font-size: 13px; color: #666; margin-top: 5px;">Share your genuine experiences with the products you use and enjoy.</p>
+                    </div>
+                    <div style="margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #e0e0e0;">
+                        <strong style="color: #2d7a4a;">Discuss the business opportunity</strong>
+                        <p style="font-size: 13px; color: #666; margin-top: 5px;">Brief conversations with people who might be interested in starting their own side business.</p>
+                    </div>
+                    <div style="margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #e0e0e0;">
+                        <strong style="color: #2d7a4a;">Mentor others</strong>
+                        <p style="font-size: 13px; color: #666; margin-top: 5px;">Support people who want to build their own businesses.</p>
+                    </div>
+                    <div style="margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #e0e0e0;">
+                        <strong style="color: #2d7a4a;">Network at events</strong>
+                        <p style="font-size: 13px; color: #666; margin-top: 5px;">Natural conversations at meetups, fitness events, and wellness gatherings.</p>
+                    </div>
+                    <div>
+                        <strong style="color: #2d7a4a;">Follow up & support</strong>
+                        <p style="font-size: 13px; color: #666; margin-top: 5px;">Check in with customers. Genuine care, not pushy sales.</p>
+                    </div>
+                    
+                    <p style="margin-top: 25px; padding-top: 25px; border-top: 2px solid #e0e0e0; font-size: 14px; color: #333;"><strong>The real benefits?</strong> Soft skills. Leadership. Confidence. A network of ambitious people across 8 countries. These skills enhance your day job too.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Us Section -->
+    <section class="why-us" id="why-us">
+        <div class="container">
+            <h2 class="section-title">Why Choose Aishwarya?</h2>
+            <p class="section-subtitle">We've been doing this for 20 years. Here's what makes us different.</p>
+
+            <div class="features-grid">
+                <div class="feature">
+                    <div class="feature-title">20 Years of Experience</div>
+                    <p class="feature-description">Not a trend. Not a quick-fix scheme. A legitimate business built on mentorship, with 500+ partners in 8 countries.</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-title">Product Quality First</div>
+                    <p class="feature-description">Nutrilite: Clinically tested, with seed-to-supplement traceability, backed by a 90-day money-back satisfaction guarantee.</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-title">Real Mentorship</div>
+                    <p class="feature-description">Girish is a Senior Director at a Big 4 firm. He built this business part-time. He shares leadership skills that benefit all areas of life.</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-title">Honest Expectations</div>
+                    <p class="feature-description">No "make £10k/month in 30 days" nonsense. Realistic, transparent conversations about effort and outcomes.</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-title">Community, Not Scheme</div>
+                    <p class="feature-description">You're joining ambitious people across 8 countries who believe in wellness and building wealth together.</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-title">Personalization Matters</div>
+                    <p class="feature-description">We don't just sell products. We help you find the right options for your needs and build genuine relationships.</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-title">No Forced Recruitment</div>
+                    <p class="feature-description">You can succeed by just selling products. No team needed. Recruitment is optional, not required.</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-title">Soft Skills Development</div>
+                    <p class="feature-description">Communication, leadership, financial literacy, confidence. These help your day job, your relationships, everything.</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-title">Wellness Focus</div>
+                    <p class="feature-description">We believe in supporting people's wellness journeys through quality nutrition and a balanced lifestyle.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact" id="contact">
+        <div class="container">
+            <h2>Let's Talk. No Pressure. Just Conversation.</h2>
+            <p>Whether you're curious about products, the business, or just want to chat about wellness—reach out. Girish personally responds to every message.</p>
+            
+            <div class="contact-buttons">
+                <!-- WhatsApp: Update the number below with your actual WhatsApp number -->
+                <a href="https://wa.me/447412121152?text=Hi%20Girish%2C%20I%27m%20interested%20in%20learning%20more%20about%20Aishwarya%20International" 
+                   target="_blank" rel="noopener noreferrer"
+                   class="contact-btn whatsapp-btn">
+                    <i class="fab fa-whatsapp"></i> WhatsApp Girish
+                </a>
+                
+                <!-- Zoom: Update the link below with your actual Zoom scheduler URL -->
+                <a href="https://scheduler.zoom.us/girish-belur/30-mins-with-girish" 
+                   target="_blank" rel="noopener noreferrer"
+                   class="contact-btn zoom-btn">
+                    <i class="fas fa-video"></i> Schedule a Zoom Call
+                </a>
+                
+                <a href="mailto:girish@aishwaryaintl.com" class="contact-btn email-btn">
+                    <i class="fas fa-envelope"></i> Email
+                </a>
+            </div>
+
+            <p style="margin-top: 40px; opacity: 0.9; font-size: 14px;">No hard sell. No pressure. Just a real conversation.</p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 Aishwarya International. Building wellness, wealth, and leaders worldwide.</p>
+        
+        <div class="ibo-disclosure">
+            <strong>Independent Business Owner Disclosure:</strong> Girish & Chethana are Independent Business Owners (IBOs) and the products mentioned are distributed through their independent business. Nutrilite™, eSpring™, XS™, and Double X™ are trademarks of their respective owners. This website is operated independently and is not an official corporate site of the product manufacturers.
+        </div>
+        
+        <p class="compliance-note">
+            <strong>Important Disclaimers:</strong><br>
+            • <strong>Products:</strong> Nutritional supplements are not intended to diagnose, treat, cure, or prevent any disease. Always consult your healthcare provider before starting any supplement regimen, particularly if you have a medical condition or are taking medication.<br>
+            • <strong>Income:</strong> Income from this business opportunity depends on individual effort, skill, and time invested. Most participants earn modest amounts, and many earn little or nothing. Past results do not guarantee future success. Request our official income disclosure for detailed earnings information.<br>
+            • <strong>Testimonials:</strong> Any personal experiences shared are individual results and are not typical. Your results will vary.
+        </p>
+    </footer>
+
+    <script>
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
