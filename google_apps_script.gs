@@ -1,423 +1,227 @@
 /**
- * Aishwarya International Health Assessment Platform
- * Google Apps Script for data management and email notifications
+ * Aishwarya International - Health Assessment backend
  *
- * Setup Instructions:
- * 1. Create a new Google Sheet
- * 2. Go to Extensions > Apps Script
- * 3. Copy this entire code into the script editor
- * 4. Update SHEET_ID and ADMIN_EMAIL below
- * 5. Save the project
- * 6. Run setupSheets() to create the structure
+ * What this does:
+ *  - Receives registrations, logins, assessments and consultation requests
+ *    from health-assessment.html (via doPost) and saves them to your Google Sheet.
+ *  - Sends a daily digest email covering the last 24 hours.
+ *
+ * Setup (one time):
+ *  1. Paste your Sheet ID into SHEET_ID below, then save.
+ *  2. Run setupSheets, then setupDailyEmailTrigger, then testDailyEmail.
+ *  3. Deploy > New deployment > Web app (Execute as: Me, Who has access: Anyone).
+ *  4. Send the Web app URL (ends in /exec) so it can go into health-assessment.html.
+ *
+ * If you edit this code later: Deploy > Manage deployments > pencil icon >
+ * Version: New version > Deploy. Otherwise the website keeps using the old code.
  */
 
-// Configuration
-const SHEET_ID = 'YOUR_GOOGLE_SHEET_ID_HERE'; // Replace with your sheet ID
-const ADMIN_EMAIL = 'aishwaryaintl@outlook.com';
-const SHEET_NAMES = {
+// ---- Configuration ----
+const SHEET_ID = 'PASTE_YOUR_SHEET_ID_HERE'; // only the part between /d/ and /edit in the sheet URL
+const ADMIN_EMAIL = 'bpg2504@gmail.com';     // who receives the daily digest
+const TIMEZONE = 'Europe/London';
+const DIGEST_HOUR = 8;                        // 8 AM UK time
+
+const SHEETS = {
   registrations: 'Registrations',
   assessments: 'Assessments',
   consultations: 'Consultations',
   dailyLog: 'Daily Log'
 };
 
-/**
- * Setup sheets structure when script is first deployed
- */
+const HEADERS = {
+  'Registrations': ['Timestamp', 'Name', 'Email', 'Phone', 'Password Hash', 'Consent Given'],
+  'Assessments': ['Timestamp', 'Email', 'Name', 'Age', 'Gender', 'Height (cm)', 'Weight (kg)', 'BMI',
+                  'BMI Category', 'Exercise', 'Diet', 'Sleep', 'Stress', 'Health Concerns'],
+  'Consultations': ['Timestamp', 'Email', 'Name', 'Phone', 'Wants Consultation', 'Follow-up Status', 'Notes'],
+  'Daily Log': ['Date', 'Registrations', 'Assessments', 'Consultation Requests', 'Sent At']
+};
+
+// ---- One-time setup ----
+
 function setupSheets() {
   const ss = SpreadsheetApp.openById(SHEET_ID);
-
-  // Create Registrations sheet
-  createSheetIfNotExists(ss, SHEET_NAMES.registrations);
-  let sheet = ss.getSheetByName(SHEET_NAMES.registrations);
-  if (sheet.getLastRow() == 0) {
-    sheet.appendRow([
-      'Timestamp',
-      'Name',
-      'Email',
-      'Phone',
-      'Registered At',
-      'Status'
-    ]);
-  }
-
-  // Create Assessments sheet
-  createSheetIfNotExists(ss, SHEET_NAMES.assessments);
-  sheet = ss.getSheetByName(SHEET_NAMES.assessments);
-  if (sheet.getLastRow() == 0) {
-    sheet.appendRow([
-      'Timestamp',
-      'Email',
-      'Name',
-      'Age',
-      'Gender',
-      'Height (cm)',
-      'Weight (kg)',
-      'BMI',
-      'Risk Level',
-      'Exercise Level',
-      'Diet Quality',
-      'Sleep Quality',
-      'Stress Level',
-      'Health Conditions',
-      'Completed At'
-    ]);
-  }
-
-  // Create Consultations sheet
-  createSheetIfNotExists(ss, SHEET_NAMES.consultations);
-  sheet = ss.getSheetByName(SHEET_NAMES.consultations);
-  if (sheet.getLastRow() == 0) {
-    sheet.appendRow([
-      'Timestamp',
-      'Email',
-      'Name',
-      'Phone',
-      'Opt-In Status',
-      'Follow-up Status',
-      'Notes'
-    ]);
-  }
-
-  // Create Daily Log sheet
-  createSheetIfNotExists(ss, SHEET_NAMES.dailyLog);
-  sheet = ss.getSheetByName(SHEET_NAMES.dailyLog);
-  if (sheet.getLastRow() == 0) {
-    sheet.appendRow([
-      'Date',
-      'New Registrations',
-      'New Assessments',
-      'Consultation Opt-Ins',
-      'Email Sent',
-      'Details'
-    ]);
-  }
-
-  Logger.log('Sheets setup complete!');
-}
-
-/**
- * Helper function to create sheet if it doesn't exist
- */
-function createSheetIfNotExists(ss, name) {
-  if (!ss.getSheetByName(name)) {
-    ss.insertSheet(name);
-  }
-}
-
-/**
- * Handle registration form submission
- * Call this from your frontend with data
- */
-function handleRegistration(data) {
-  try {
-    const ss = SpreadsheetApp.openById(SHEET_ID);
-    const sheet = ss.getSheetByName(SHEET_NAMES.registrations);
-
-    const row = [
-      new Date(),
-      data.name,
-      data.email,
-      data.phone || '',
-      data.registeredAt,
-      'Active'
-    ];
-
-    sheet.appendRow(row);
-
-    Logger.log('Registration recorded: ' + data.email);
-    return { success: true, message: 'Registration recorded' };
-  } catch (e) {
-    Logger.log('Error in handleRegistration: ' + e);
-    return { success: false, error: e.message };
-  }
-}
-
-/**
- * Handle assessment submission
- */
-function handleAssessment(data) {
-  try {
-    const ss = SpreadsheetApp.openById(SHEET_ID);
-    const sheet = ss.getSheetByName(SHEET_NAMES.assessments);
-
-    const row = [
-      new Date(),
-      data.user.email,
-      data.user.name,
-      data.age,
-      data.gender,
-      data.height,
-      data.weight,
-      data.bmi,
-      data.riskLevel,
-      data.exercise,
-      data.diet,
-      data.sleep,
-      data.stress,
-      data.conditions.join(', '),
-      data.completedAt
-    ];
-
-    sheet.appendRow(row);
-
-    Logger.log('Assessment recorded: ' + data.user.email);
-    return { success: true, message: 'Assessment recorded' };
-  } catch (e) {
-    Logger.log('Error in handleAssessment: ' + e);
-    return { success: false, error: e.message };
-  }
-}
-
-/**
- * Handle consultation preference
- */
-function handleConsultation(data) {
-  try {
-    const ss = SpreadsheetApp.openById(SHEET_ID);
-    const sheet = ss.getSheetByName(SHEET_NAMES.consultations);
-
-    const row = [
-      new Date(),
-      data.user.email,
-      data.user.name,
-      data.phone || '',
-      data.consultationOptIn ? 'Yes' : 'No',
-      'Pending',
-      ''
-    ];
-
-    sheet.appendRow(row);
-
-    Logger.log('Consultation preference recorded: ' + data.user.email);
-    return { success: true, message: 'Preference recorded' };
-  } catch (e) {
-    Logger.log('Error in handleConsultation: ' + e);
-    return { success: false, error: e.message };
-  }
-}
-
-/**
- * Generate and send daily digest email
- * Schedule this to run daily at a specific time
- */
-function sendDailyDigestEmail() {
-  try {
-    const ss = SpreadsheetApp.openById(SHEET_ID);
-    const today = new Date();
-    const todayString = Utilities.formatDate(today, Session.getScriptTimeZone(), 'yyyy-MM-dd');
-
-    // Get today's registrations
-    const regSheet = ss.getSheetByName(SHEET_NAMES.registrations);
-    const regData = regSheet.getDataRange().getValues();
-    const todayRegistrations = regData.filter(row => {
-      const rowDate = new Date(row[0]);
-      return Utilities.formatDate(rowDate, Session.getScriptTimeZone(), 'yyyy-MM-dd') === todayString;
-    }).slice(1); // Skip header
-
-    // Get today's assessments
-    const assSheet = ss.getSheetByName(SHEET_NAMES.assessments);
-    const assData = assSheet.getDataRange().getValues();
-    const todayAssessments = assData.filter(row => {
-      const rowDate = new Date(row[0]);
-      return Utilities.formatDate(rowDate, Session.getScriptTimeZone(), 'yyyy-MM-dd') === todayString;
-    }).slice(1); // Skip header
-
-    // Get today's consultation opt-ins
-    const conSheet = ss.getSheetByName(SHEET_NAMES.consultations);
-    const conData = conSheet.getDataRange().getValues();
-    const todayConsultations = conData.filter(row => {
-      const rowDate = new Date(row[0]);
-      return Utilities.formatDate(rowDate, Session.getScriptTimeZone(), 'yyyy-MM-dd') === todayString &&
-             row[4] === 'Yes'; // Opt-in = Yes
-    }).slice(1); // Skip header
-
-    // Build email HTML
-    let emailBody = '<h2>Aishwarya International - Daily Health Assessment Report</h2>';
-    emailBody += '<p><strong>Date:</strong> ' + todayString + '</p>';
-
-    emailBody += '<h3>📊 Summary</h3>';
-    emailBody += '<ul>';
-    emailBody += '<li><strong>New Registrations:</strong> ' + todayRegistrations.length + '</li>';
-    emailBody += '<li><strong>Completed Assessments:</strong> ' + todayAssessments.length + '</li>';
-    emailBody += '<li><strong>Consultation Requests:</strong> ' + todayConsultations.length + '</li>';
-    emailBody += '</ul>';
-
-    if (todayRegistrations.length > 0) {
-      emailBody += '<h3>👤 New Registrations</h3>';
-      emailBody += '<table border="1" cellpadding="10" style="border-collapse: collapse; width: 100%;">';
-      emailBody += '<tr><th>Name</th><th>Email</th><th>Phone</th></tr>';
-      todayRegistrations.forEach(reg => {
-        emailBody += '<tr><td>' + reg[1] + '</td><td>' + reg[2] + '</td><td>' + reg[3] + '</td></tr>';
-      });
-      emailBody += '</table>';
-    }
-
-    if (todayAssessments.length > 0) {
-      emailBody += '<h3>📋 New Assessments Completed</h3>';
-      emailBody += '<table border="1" cellpadding="10" style="border-collapse: collapse; width: 100%;">';
-      emailBody += '<tr><th>Name</th><th>Email</th><th>Age</th><th>Risk Level</th><th>Conditions</th></tr>';
-      todayAssessments.forEach(ass => {
-        emailBody += '<tr><td>' + ass[2] + '</td><td>' + ass[1] + '</td><td>' + ass[3] + '</td><td>' + ass[8] + '</td><td>' + ass[13] + '</td></tr>';
-      });
-      emailBody += '</table>';
-    }
-
-    if (todayConsultations.length > 0) {
-      emailBody += '<h3>📞 Consultation Requests</h3>';
-      emailBody += '<table border="1" cellpadding="10" style="border-collapse: collapse; width: 100%;">';
-      emailBody += '<tr><th>Name</th><th>Email</th><th>Phone</th></tr>';
-      todayConsultations.forEach(con => {
-        emailBody += '<tr><td>' + con[2] + '</td><td>' + con[1] + '</td><td>' + con[3] + '</td></tr>';
-      });
-      emailBody += '</table>';
-    }
-
-    emailBody += '<p><br><strong>Dashboard:</strong> <a href="https://docs.google.com/spreadsheets/d/' + SHEET_ID + '">View Full Data</a></p>';
-    emailBody += '<p style="color: #999; font-size: 12px;">Automated email from Aishwarya International Health Assessment Platform</p>';
-
-    // Send email only if there is new data
-    if (todayRegistrations.length > 0 || todayAssessments.length > 0 || todayConsultations.length > 0) {
-      GmailApp.sendEmail(ADMIN_EMAIL, 'Aishwarya Health Assessment - Daily Report (' + todayString + ')', '', {
-        htmlBody: emailBody
-      });
-
-      // Log in Daily Log sheet
-      const logSheet = ss.getSheetByName(SHEET_NAMES.dailyLog);
-      logSheet.appendRow([
-        todayString,
-        todayRegistrations.length,
-        todayAssessments.length,
-        todayConsultations.length,
-        new Date(),
-        'Email sent successfully'
-      ]);
-
-      Logger.log('Daily digest email sent to ' + ADMIN_EMAIL);
-    } else {
-      Logger.log('No new data today, email not sent');
-    }
-
-  } catch (e) {
-    Logger.log('Error in sendDailyDigestEmail: ' + e);
-    GmailApp.sendEmail(ADMIN_EMAIL, 'ERROR: Health Assessment Daily Report', 'Error occurred: ' + e);
-  }
-}
-
-/**
- * Setup daily email trigger
- * Run this once to schedule daily emails at 8:00 AM
- */
-function setupDailyEmailTrigger() {
-  // Delete existing triggers
-  const triggers = ScriptApp.getProjectTriggers();
-  triggers.forEach(trigger => {
-    if (trigger.getHandlerFunction() === 'sendDailyDigestEmail') {
-      ScriptApp.deleteTrigger(trigger);
+  Object.keys(HEADERS).forEach(function (name) {
+    let sheet = ss.getSheetByName(name);
+    if (!sheet) sheet = ss.insertSheet(name);
+    if (sheet.getLastRow() === 0) {
+      sheet.appendRow(HEADERS[name]);
+      sheet.getRange(1, 1, 1, HEADERS[name].length).setFontWeight('bold');
+      sheet.setFrozenRows(1);
     }
   });
+  Logger.log('Sheets setup complete: ' + ss.getUrl());
+}
 
-  // Create new trigger for daily at 8:00 AM
+function setupDailyEmailTrigger() {
+  ScriptApp.getProjectTriggers().forEach(function (t) {
+    if (t.getHandlerFunction() === 'sendDailyDigestEmail') ScriptApp.deleteTrigger(t);
+  });
   ScriptApp.newTrigger('sendDailyDigestEmail')
     .timeBased()
-    .atHour(8)
     .everyDays(1)
-    .inTimezone('Asia/Kolkata') // Change to your timezone
+    .atHour(DIGEST_HOUR)
+    .inTimezone(TIMEZONE)
     .create();
-
-  Logger.log('Daily email trigger setup complete');
+  Logger.log('Daily digest scheduled for around ' + DIGEST_HOUR + ':00 ' + TIMEZONE + ', sent to ' + ADMIN_EMAIL);
 }
 
-/**
- * Get all registrations (for admin dashboard)
- */
-function getAllRegistrations() {
-  const ss = SpreadsheetApp.openById(SHEET_ID);
-  const sheet = ss.getSheetByName(SHEET_NAMES.registrations);
-  const data = sheet.getDataRange().getValues();
-
-  // Return as objects
-  const headers = data[0];
-  return data.slice(1).map(row => {
-    let obj = {};
-    headers.forEach((header, index) => {
-      obj[header] = row[index];
-    });
-    return obj;
-  });
-}
-
-/**
- * Get all assessments (for admin dashboard)
- */
-function getAllAssessments() {
-  const ss = SpreadsheetApp.openById(SHEET_ID);
-  const sheet = ss.getSheetByName(SHEET_NAMES.assessments);
-  const data = sheet.getDataRange().getValues();
-
-  // Return as objects
-  const headers = data[0];
-  return data.slice(1).map(row => {
-    let obj = {};
-    headers.forEach((header, index) => {
-      obj[header] = row[index];
-    });
-    return obj;
-  });
-}
-
-/**
- * Get consultation requests (for admin dashboard)
- */
-function getConsultationRequests() {
-  const ss = SpreadsheetApp.openById(SHEET_ID);
-  const sheet = ss.getSheetByName(SHEET_NAMES.consultations);
-  const data = sheet.getDataRange().getValues();
-
-  // Return as objects
-  const headers = data[0];
-  return data.slice(1).map(row => {
-    let obj = {};
-    headers.forEach((header, index) => {
-      obj[header] = row[index];
-    });
-    return obj;
-  });
-}
-
-/**
- * Export data as CSV
- */
-function exportDataAsCSV(sheetName) {
-  const ss = SpreadsheetApp.openById(SHEET_ID);
-  const sheet = ss.getSheetByName(sheetName);
-  const data = sheet.getDataRange().getValues();
-
-  let csv = '';
-  data.forEach(row => {
-    csv += row.map(cell => {
-      // Escape quotes and wrap in quotes if contains comma
-      if (String(cell).includes(',') || String(cell).includes('"')) {
-        return '"' + String(cell).replace(/"/g, '""') + '"';
-      }
-      return cell;
-    }).join(',') + '\n';
-  });
-
-  return csv;
-}
-
-/**
- * Test function - uncomment to test email
- */
 function testDailyEmail() {
-  // This will send a test email
-  const testBody = '<h2>Test Email from Google Apps Script</h2>';
-  testBody += '<p>If you receive this, the email system is working!</p>';
-
-  GmailApp.sendEmail(ADMIN_EMAIL, '[TEST] Aishwarya Health Assessment Email System', '', {
-    htmlBody: testBody
+  MailApp.sendEmail({
+    to: ADMIN_EMAIL,
+    subject: '[TEST] Aishwarya Health Assessment email',
+    htmlBody: '<p>If you can read this, the digest email works.</p>'
   });
+  Logger.log('Test email sent to ' + ADMIN_EMAIL);
+}
 
-  Logger.log('Test email sent');
+// ---- Web app endpoints (called by health-assessment.html) ----
+
+function doGet() {
+  return json_({ ok: true, service: 'Aishwarya Health Assessment' });
+}
+
+function doPost(e) {
+  const lock = LockService.getScriptLock();
+  try {
+    lock.waitLock(15000);
+    const data = JSON.parse(e.postData.contents);
+    switch (data.action) {
+      case 'register': return json_(register_(data));
+      case 'login': return json_(login_(data));
+      case 'assessment': return json_(saveAssessment_(data));
+      case 'consultation': return json_(saveConsultation_(data));
+      default: return json_({ ok: false, error: 'Unknown action' });
+    }
+  } catch (err) {
+    return json_({ ok: false, error: 'Server error: ' + err });
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+function register_(d) {
+  const email = normaliseEmail_(d.email);
+  if (!email || !d.name || !d.passwordHash) return { ok: false, error: 'Missing name, email or password.' };
+  if (findRegistration_(email)) {
+    return { ok: false, error: 'An account with this email already exists. Please log in instead.' };
+  }
+  sheet_(SHEETS.registrations).appendRow([
+    new Date(), safe_(d.name), email, safe_(d.phone), d.passwordHash, d.consent ? 'Yes' : 'No'
+  ]);
+  return { ok: true, name: d.name, phone: d.phone || '' };
+}
+
+function login_(d) {
+  const row = findRegistration_(normaliseEmail_(d.email));
+  if (!row || row[4] !== d.passwordHash) return { ok: false, error: 'Email or password is incorrect.' };
+  return { ok: true, name: String(row[1]), phone: String(row[3] || '') };
+}
+
+function saveAssessment_(d) {
+  const email = normaliseEmail_(d.email);
+  if (!findRegistration_(email)) return { ok: false, error: 'Please register first.' };
+  sheet_(SHEETS.assessments).appendRow([
+    new Date(), email, safe_(d.name), d.age, safe_(d.gender), d.height, d.weight, d.bmi,
+    safe_(d.bmiCategory), safe_(d.exercise), safe_(d.diet), safe_(d.sleep), safe_(d.stress),
+    safe_(d.conditions)
+  ]);
+  return { ok: true };
+}
+
+function saveConsultation_(d) {
+  const email = normaliseEmail_(d.email);
+  if (!findRegistration_(email)) return { ok: false, error: 'Please register first.' };
+  sheet_(SHEETS.consultations).appendRow([
+    new Date(), email, safe_(d.name), safe_(d.phone), d.wantsConsultation ? 'Yes' : 'No',
+    d.wantsConsultation ? 'To contact' : 'No follow-up', ''
+  ]);
+  return { ok: true };
+}
+
+// ---- Daily digest ----
+
+function sendDailyDigestEmail() {
+  const since = new Date(Date.now() - 24 * 60 * 60 * 1000);
+  const regs = rowsSince_(SHEETS.registrations, since);
+  const assessments = rowsSince_(SHEETS.assessments, since);
+  const consults = rowsSince_(SHEETS.consultations, since).filter(function (r) { return r[4] === 'Yes'; });
+
+  if (!regs.length && !assessments.length && !consults.length) {
+    Logger.log('Nothing new in the last 24 hours. No email sent.');
+    return;
+  }
+
+  const today = Utilities.formatDate(new Date(), TIMEZONE, 'dd MMM yyyy');
+  let html = '<h2>Health Assessment digest - ' + today + '</h2>' +
+    '<p>Last 24 hours: <b>' + regs.length + '</b> registrations, <b>' + assessments.length +
+    '</b> assessments, <b>' + consults.length + '</b> consultation requests.</p>';
+
+  if (consults.length) {
+    html += '<h3>Call these people first (asked for a consultation)</h3>' +
+      table_(['Name', 'Email', 'Phone'], consults.map(function (r) { return [r[2], r[1], r[3]]; }));
+  }
+  if (assessments.length) {
+    html += '<h3>Assessments completed</h3>' +
+      table_(['Name', 'Email', 'Age', 'BMI', 'Health concerns'],
+        assessments.map(function (r) { return [r[2], r[1], r[3], r[7] + ' (' + r[8] + ')', r[13]]; }));
+  }
+  if (regs.length) {
+    html += '<h3>New registrations</h3>' +
+      table_(['Name', 'Email', 'Phone'], regs.map(function (r) { return [r[1], r[2], r[3]]; }));
+  }
+  html += '<p><a href="https://docs.google.com/spreadsheets/d/' + SHEET_ID + '">Open the full sheet</a></p>';
+
+  MailApp.sendEmail({ to: ADMIN_EMAIL, subject: 'Health Assessment digest - ' + today, htmlBody: html });
+  sheet_(SHEETS.dailyLog).appendRow([today, regs.length, assessments.length, consults.length, new Date()]);
+}
+
+// ---- Helpers ----
+
+function sheet_(name) {
+  const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(name);
+  if (!sheet) throw new Error('Sheet "' + name + '" not found. Run setupSheets first.');
+  return sheet;
+}
+
+function rowsSince_(name, since) {
+  const values = sheet_(name).getDataRange().getValues().slice(1); // skip header row
+  return values.filter(function (r) { return r[0] instanceof Date && r[0] >= since; });
+}
+
+function findRegistration_(email) {
+  if (!email) return null;
+  const values = sheet_(SHEETS.registrations).getDataRange().getValues().slice(1);
+  for (let i = 0; i < values.length; i++) {
+    if (String(values[i][2]).toLowerCase() === email) return values[i];
+  }
+  return null;
+}
+
+function normaliseEmail_(email) {
+  return String(email || '').trim().toLowerCase();
+}
+
+// Stops text like "+44..." or "=..." being read as a formula by Sheets
+function safe_(value) {
+  const s = value === undefined || value === null ? '' : String(value).slice(0, 1000);
+  return /^[=+\-@]/.test(s) ? "'" + s : s;
+}
+
+function escape_(value) {
+  return String(value === undefined || value === null ? '' : value)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/^'/, '');
+}
+
+function table_(headers, rows) {
+  const cell = 'style="border:1px solid #ccc;padding:6px;text-align:left"';
+  return '<table style="border-collapse:collapse">' +
+    '<tr>' + headers.map(function (h) { return '<th ' + cell + '>' + escape_(h) + '</th>'; }).join('') + '</tr>' +
+    rows.map(function (r) {
+      return '<tr>' + r.map(function (v) { return '<td ' + cell + '>' + escape_(v) + '</td>'; }).join('') + '</tr>';
+    }).join('') + '</table>';
+}
+
+function json_(obj) {
+  return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);
 }
