@@ -3,597 +3,1433 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aishwarya International | Health, Wellness & Mentorship</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <title>Aishwarya International - Health Assessment Platform</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
-            line-height: 1.6; color: #333; background: #fff;
-        }
-        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
-
-        /* Navigation */
-        nav {
-            background: #fff; padding: 15px 0; border-bottom: 1px solid #eee;
-            position: sticky; top: 0; z-index: 100;
-        }
-        nav .container { display: flex; justify-content: space-between; align-items: center; }
-        .logo { font-size: 24px; font-weight: 700; color: #1a472a; text-decoration: none; }
-        nav ul { display: flex; list-style: none; gap: 30px; }
-        nav a { color: #333; text-decoration: none; font-size: 14px; transition: color 0.3s; }
-        nav a:hover { color: #2d7a4a; }
-        @media (max-width: 768px) {
-            nav ul { gap: 15px; }
-            nav a { font-size: 12px; }
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            padding: 20px;
+            min-height: 100vh;
         }
 
-        /* Hero Section */
-        .hero {
-            background: linear-gradient(135deg, #1a472a 0%, #2d7a4a 100%);
-            color: #fff; padding: 80px 20px; text-align: center;
-        }
-        .hero h1 { font-size: 48px; margin-bottom: 20px; font-weight: 700; line-height: 1.2; }
-        .hero p {
-            font-size: 20px; margin-bottom: 30px; opacity: 0.95;
-            max-width: 700px; margin-left: auto; margin-right: auto;
-        }
-        .cta-primary {
-            display: inline-block; background: #f4a460; color: #fff;
-            padding: 15px 35px; border-radius: 5px; text-decoration: none;
-            font-weight: 600; font-size: 16px;
-            transition: background 0.3s, transform 0.2s; border: none; cursor: pointer;
-        }
-        .cta-primary:hover { background: #e59050; transform: translateY(-2px); }
-        .cta-secondary {
-            display: inline-block; background: transparent; color: #fff;
-            padding: 15px 35px; border: 2px solid #fff; border-radius: 5px;
-            text-decoration: none; font-weight: 600; font-size: 16px;
-            margin-left: 15px; transition: all 0.3s; cursor: pointer;
-        }
-        .cta-secondary:hover { background: #fff; color: #1a472a; }
-        @media (max-width: 768px) {
-            .hero h1 { font-size: 32px; }
-            .hero p { font-size: 16px; }
-            .cta-secondary { display: block; margin: 15px 0 0 0; }
-        }
-
-        /* Trust Badges */
-        .trust-badges { background: #f9f9f9; padding: 40px 20px; text-align: center; }
-        .badges {
-            display: flex; justify-content: center; gap: 40px;
-            flex-wrap: wrap; max-width: 900px; margin: 0 auto;
-        }
-        .badge { text-align: center; }
-        .badge-number { font-size: 28px; font-weight: 700; color: #2d7a4a; }
-        .badge-label { font-size: 13px; color: #666; margin-top: 5px; }
-
-        /* About Section */
-        .about { padding: 80px 20px; background: #fff; }
-        .about .container { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: center; }
-        .about h2 { font-size: 36px; margin-bottom: 20px; color: #1a472a; line-height: 1.2; }
-        .about p { font-size: 16px; line-height: 1.8; color: #555; margin-bottom: 15px; }
-
-        .about-image-wrapper {
-            position: relative; border-radius: 10px; overflow: hidden;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-        }
-        .about-image-wrapper img { width: 100%; height: auto; display: block; }
-        .about-image-caption {
-            position: absolute; bottom: 0; left: 0; right: 0;
-            background: linear-gradient(transparent, rgba(0,0,0,0.8));
-            color: #fff; padding: 40px 20px 20px; font-size: 15px; text-align: center;
-        }
-        .about-image-caption strong { display: block; font-size: 17px; margin-bottom: 4px; }
-        .highlight { color: #2d7a4a; font-weight: 600; }
-
-        @media (max-width: 768px) {
-            .about .container { grid-template-columns: 1fr; }
-            .about h2 { font-size: 28px; }
-        }
-
-        /* Videos Section */
-        .videos {
-            padding: 80px 20px;
-            background: linear-gradient(135deg, #f9f9f9 0%, #f0f8f5 100%);
-        }
-        .videos-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 30px; margin-top: 40px;
-        }
-        .video-card {
-            background: #fff; border-radius: 10px; overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            transition: transform 0.3s, box-shadow 0.3s;
-            display: block; text-decoration: none; color: inherit;
-        }
-        .video-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
-        }
-        .video-thumbnail {
-            position: relative; padding-bottom: 56.25%;
-            height: 0; overflow: hidden; background: #000;
-        }
-        .video-thumbnail img {
-            position: absolute; top: 0; left: 0;
-            width: 100%; height: 100%; object-fit: cover; display: block;
-        }
-        .play-button {
-            position: absolute; top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            width: 68px; height: 48px;
-            background: rgba(0, 0, 0, 0.7);
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
             border-radius: 12px;
-            display: flex; align-items: center; justify-content: center;
-            transition: background 0.2s;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
         }
-        .video-card:hover .play-button { background: #ff0000; }
-        .play-button::after {
-            content: ''; display: block;
-            border-style: solid;
-            border-width: 11px 0 11px 18px;
-            border-color: transparent transparent transparent #fff;
-            margin-left: 3px;
-        }
-        .youtube-badge {
-            position: absolute; bottom: 10px; right: 10px;
-            background: rgba(0, 0, 0, 0.7); color: #fff;
-            font-size: 11px; padding: 3px 8px; border-radius: 3px;
-            display: flex; align-items: center; gap: 4px;
-        }
-        .video-info { padding: 20px; }
-        .video-info h3 { color: #1a472a; font-size: 17px; margin-bottom: 8px; }
-        .video-info p { color: #666; font-size: 14px; line-height: 1.5; }
 
-        /* Products Section */
-        .products { padding: 80px 20px; background: #f5f5f5; }
-        .section-title { font-size: 36px; text-align: center; margin-bottom: 15px; color: #1a472a; }
-        .section-subtitle {
-            font-size: 18px; text-align: center; color: #666;
-            margin-bottom: 50px; max-width: 600px; margin-left: auto; margin-right: auto;
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
         }
-        .products-grid {
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 1.5em;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #34495e;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="number"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-row {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
         }
-        .product-card {
-            background: #fff; border-radius: 10px; padding: 30px;
-            text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-        .product-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
-        }
-        .product-icon { font-size: 48px; color: #2d7a4a; margin-bottom: 15px; }
-        .product-card h3 { font-size: 20px; margin-bottom: 15px; color: #1a472a; }
-        .product-card p { font-size: 14px; color: #666; line-height: 1.7; }
 
-        /* Opportunity Section */
-        .opportunity {
-            padding: 80px 20px;
-            background: linear-gradient(135deg, #fff 0%, #f0f8f5 100%);
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
         }
-        .opportunity .container { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: center; }
-        .opportunity h2 { font-size: 36px; margin-bottom: 20px; color: #1a472a; line-height: 1.2; }
-        .opportunity-list { list-style: none; }
-        .opportunity-list li {
-            padding: 12px 0; font-size: 16px; color: #333;
-            border-bottom: 1px solid #e0e0e0;
-            display: flex; align-items: center;
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
         }
-        .opportunity-list li:before {
-            content: "✓"; color: #2d7a4a; font-weight: 700;
-            margin-right: 12px; font-size: 18px;
+
+        .checkbox-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            cursor: pointer;
         }
-        .income-timeline {
-            background: #fff; border-radius: 10px; padding: 30px;
-            margin-top: 30px; border-left: 4px solid #2d7a4a;
+
+        .checkbox-item label {
+            margin: 0;
+            font-weight: 500;
+            cursor: pointer;
         }
-        .income-timeline h4 { color: #1a472a; margin-bottom: 15px; }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        button {
+            padding: 14px 40px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #7f8c8d;
+        }
+
+        .btn-link {
+            background: none;
+            color: #667eea;
+            text-decoration: underline;
+            padding: 0;
+            font-size: 0.9em;
+        }
+
+        .btn-link:hover {
+            color: #764ba2;
+        }
+
+        /* Page sections */
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* Registration page */
+        .login-toggle {
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
+        }
+
+        .login-toggle .btn-link {
+            margin-left: 5px;
+        }
+
+        /* Results */
+        .health-profile {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border-left: 5px solid #667eea;
+        }
+
+        .health-profile h3 {
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .profile-item {
+            display: inline-block;
+            margin-right: 30px;
+            margin-bottom: 10px;
+        }
+
+        .profile-item strong {
+            color: #667eea;
+        }
+
+        .risk-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+
+        .risk-healthy {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .risk-warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .risk-danger {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .condition-card {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+        }
+
+        .condition-card:hover {
+            border-color: #667eea;
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.15);
+        }
+
+        .condition-name {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .product-tier {
+            margin-bottom: 20px;
+        }
+
+        .tier-title {
+            font-weight: 700;
+            color: #34495e;
+            margin-bottom: 10px;
+            font-size: 1.05em;
+        }
+
+        .product-list {
+            list-style: none;
+            margin-left: 20px;
+        }
+
+        .product-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #ecf0f1;
+            color: #555;
+        }
+
+        .product-list li:last-child {
+            border-bottom: none;
+        }
+
+        .lifestyle-section {
+            background: #e8f4f8;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 5px solid #3498db;
+            margin-top: 15px;
+        }
+
+        .lifestyle-section h4 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .lifestyle-item {
+            margin: 8px 0;
+            padding-left: 20px;
+            position: relative;
+            color: #555;
+        }
+
+        .lifestyle-item::before {
+            content: "→ ";
+            position: absolute;
+            left: 0;
+            color: #3498db;
+            font-weight: bold;
+        }
+
+        .eating-habits {
+            background: #fef5e7;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 5px solid #f39c12;
+            margin-top: 15px;
+        }
+
+        .eating-habits h4 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .eating-habits p {
+            margin: 8px 0;
+            color: #555;
+            padding-left: 15px;
+        }
+
+        .opt-in-section {
+            background: #f0f8ff;
+            padding: 25px;
+            border-radius: 8px;
+            border: 2px solid #3498db;
+            margin: 30px 0;
+        }
+
+        .opt-in-section h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .checkbox-item.consent {
+            display: block;
+            margin: 15px 0;
+        }
+
+        .checkbox-item.consent input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+        }
+
+        .checkbox-item.consent label {
+            display: inline;
+            font-weight: normal;
+            margin: 0;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .error-message.active {
+            display: block;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .success-message.active {
+            display: block;
+        }
+
+        .info-message {
+            background: #d1ecf1;
+            color: #0c5460;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+
+        /* Logout button */
+        .user-info {
+            text-align: right;
+            padding: 10px 0;
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .user-info .btn-link {
+            margin-left: 10px;
+        }
+
         @media (max-width: 768px) {
-            .opportunity .container { grid-template-columns: 1fr; }
-            .opportunity h2 { font-size: 28px; }
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .checkbox-group {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            button {
+                width: 100%;
+            }
+
+            .profile-item {
+                margin-right: 15px;
+                display: block;
+                margin-bottom: 8px;
+            }
         }
 
-        /* Why Us Section */
-        .why-us { padding: 80px 20px; background: #fff; }
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 30px; margin-top: 50px;
-        }
-        .feature {
-            background: #f9f9f9; padding: 30px;
-            border-radius: 10px; border-left: 4px solid #f4a460;
-        }
-        .feature-title { font-size: 18px; font-weight: 600; color: #1a472a; margin-bottom: 10px; }
-        .feature-description { font-size: 14px; color: #666; line-height: 1.6; }
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
 
-        /* Contact Section */
-        .contact {
-            background: linear-gradient(135deg, #1a472a 0%, #2d7a4a 100%);
-            color: #fff; padding: 80px 20px; text-align: center;
-        }
-        .contact h2 { font-size: 36px; margin-bottom: 20px; }
-        .contact p {
-            font-size: 18px; max-width: 600px;
-            margin: 0 auto 30px; opacity: 0.95;
-        }
-        .contact-buttons {
-            display: flex; justify-content: center; gap: 15px;
-            flex-wrap: wrap; margin-top: 30px;
-        }
-        .contact-btn {
-            display: inline-flex; align-items: center; gap: 10px;
-            padding: 15px 28px; background: #fff; color: #1a472a;
-            text-decoration: none; border-radius: 5px;
-            font-weight: 600; font-size: 16px;
-            transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .contact-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
-        .whatsapp-btn { background: #25d366; color: #fff; }
-        .zoom-btn { background: #2D8CFF; color: #fff; }
-        .email-btn { background: #fff; color: #1a472a; }
+            .container {
+                box-shadow: none;
+            }
 
-        /* Footer */
-        footer {
-            background: #1a472a; color: #fff;
-            padding: 40px 20px; text-align: center;
-        }
-        footer p { margin-bottom: 10px; font-size: 14px; }
-        .compliance-note {
-            font-size: 11px; opacity: 0.8;
-            max-width: 800px; margin: 15px auto 0; line-height: 1.6;
-        }
-        .ibo-disclosure {
-            background: rgba(255,255,255,0.1); padding: 20px;
-            border-radius: 8px; max-width: 800px;
-            margin: 20px auto 0; font-size: 12px; line-height: 1.6;
+            button {
+                display: none;
+            }
+
+            .condition-card {
+                page-break-inside: avoid;
+            }
+
+            .user-info {
+                display: none;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav>
-        <div class="container">
-            <a href="#" class="logo">Aishwarya International</a>
-            <ul>
-                <li><a href="#about">About</a></li>
-                <li><a href="#videos">Our Story</a></li>
-                <li><a href="#products">Products</a></li>
-                <li><a href="#opportunity">Opportunity</a></li>
-                <li><a href="#why-us">Why Us</a></li>
-                <li><a href="#contact">Contact</a></li>
-            </ul>
+    <div class="container">
+        <div class="header">
+            <h1>🌿 Aishwarya International</h1>
+            <p>Nutritional Health Assessment Platform</p>
         </div>
-    </nav>
 
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="container">
-            <h1>Prevention Beats Cure.<br>Build Wellness While Building Wealth.</h1>
-            <p>20 years. 500+ partners. One mission: Help people support their wellness through quality nutrition and build long-term wealth through real mentorship—no hype, no pressure.</p>
-            <div>
-                <a href="#contact" class="cta-primary">Let's Talk</a>
-                <a href="#products" class="cta-secondary">Explore Products</a>
-            </div>
-        </div>
-    </section>
+        <div class="content">
+            <!-- Registration Page -->
+            <div id="registrationPage" class="page active">
+                <div class="section">
+                    <h2 class="section-title">Create Your Account</h2>
+                    <p style="color: #666; margin-bottom: 20px;">Register to access your personalized health assessment and receive professional nutritional recommendations.</p>
 
-    <!-- Trust Badges -->
-    <section class="trust-badges">
-        <div class="container">
-            <div class="badges">
-                <div class="badge">
-                    <div class="badge-number">20+</div>
-                    <div class="badge-label">Years in Business</div>
-                </div>
-                <div class="badge">
-                    <div class="badge-number">500+</div>
-                    <div class="badge-label">Active Partners</div>
-                </div>
-                <div class="badge">
-                    <div class="badge-number">8</div>
-                    <div class="badge-label">Countries</div>
-                </div>
-                <div class="badge">
-                    <div class="badge-number">90</div>
-                    <div class="badge-label">Day Money-Back</div>
-                </div>
-            </div>
-        </div>
-    </section>
+                    <div id="regError" class="error-message"></div>
 
-    <!-- About Section -->
-    <section class="about" id="about">
-        <div class="container">
-            <div>
-                <h2>Why We Started</h2>
-                <p>Losing a beloved family member to a serious illness changed our perspective forever. We realized how much we wished we had known earlier about the importance of nutrition and a healthy lifestyle.</p>
-                <p>That moment sparked our journey. We embraced the principle that <span class="highlight">wellness comes from knowledge, consistency, and access to quality products.</span></p>
-                <p>For the last 20 years, we've built Aishwarya International around helping people take charge of their wellness journey through quality nutrition and a supportive community.</p>
-                <p>Today, we mentor 500+ partners across 8 countries. We provide personalized wellness guidance, quality products, and a culture where people aren't just earning income—they're growing as individuals.</p>
-                <p style="margin-top: 20px; padding-top: 20px; border-top: 2px solid #eee;"><strong>Girish (Senior Director, Big 4 Firm)</strong> & <strong>Chethana</strong><br><span style="font-size:13px;color:#666;">Independent Business Owners</span></p>
-            </div>
-            <div class="about-image-wrapper">
-                <img src="Girish_and_Chethana.jpg" alt="Girish and Chethana - Founders of Aishwarya International" />
-                <div class="about-image-caption">
-                    <strong>Girish & Chethana</strong>
-                    Founders, Aishwarya International
+                    <form id="registrationForm">
+                        <div class="form-group">
+                            <label for="regName">Full Name *</label>
+                            <input type="text" id="regName" required placeholder="Enter your full name">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="regEmail">Email Address *</label>
+                            <input type="email" id="regEmail" required placeholder="your.email@example.com">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="regPassword">Password *</label>
+                            <input type="password" id="regPassword" required placeholder="Create a secure password (min 6 characters)">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="regConfirmPassword">Confirm Password *</label>
+                            <input type="password" id="regConfirmPassword" required placeholder="Confirm your password">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="regPhone">Phone Number (Optional)</label>
+                            <input type="text" id="regPhone" placeholder="Your phone number">
+                        </div>
+
+                        <div class="form-group">
+                            <div class="checkbox-item consent">
+                                <input type="checkbox" id="regConsent" required>
+                                <label for="regConsent">I agree to share my assessment results for professional follow-up consultation</label>
+                            </div>
+                        </div>
+
+                        <div class="button-group">
+                            <button type="submit" class="btn-primary">Create Account</button>
+                        </div>
+
+                        <div class="login-toggle">
+                            Already have an account? <button type="button" class="btn-link" onclick="switchToLogin()">Login here</button>
+                        </div>
+                    </form>
                 </div>
             </div>
-        </div>
-    </section>
 
-    <!-- Videos Section - Clickable thumbnails that open YouTube -->
-    <section class="videos" id="videos">
-        <div class="container">
-            <h2 class="section-title">Get to Know Us</h2>
-            <p class="section-subtitle">Watch these videos to learn more about our journey, our approach, and our mission.</p>
+            <!-- Login Page -->
+            <div id="loginPage" class="page">
+                <div class="section">
+                    <h2 class="section-title">Login to Your Account</h2>
+                    <p style="color: #666; margin-bottom: 20px;">Sign in to access your health assessment.</p>
 
-            <div class="videos-grid">
-                <!-- VIDEO 1 -->
-                <a href="https://youtu.be/H1zmr6U2ao4" target="_blank" rel="noopener noreferrer" class="video-card">
-                    <div class="video-thumbnail">
-                        <img src="https://img.youtube.com/vi/H1zmr6U2ao4/hqdefault.jpg" alt="Video 1 thumbnail" loading="lazy" />
-                        <div class="play-button"></div>
-                        <div class="youtube-badge">
-                            <i class="fab fa-youtube" style="color:#ff0000"></i> YouTube
+                    <div id="loginError" class="error-message"></div>
+
+                    <form id="loginForm">
+                        <div class="form-group">
+                            <label for="loginEmail">Email Address *</label>
+                            <input type="email" id="loginEmail" required placeholder="your.email@example.com">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="loginPassword">Password *</label>
+                            <input type="password" id="loginPassword" required placeholder="Enter your password">
+                        </div>
+
+                        <div class="button-group">
+                            <button type="submit" class="btn-primary">Login</button>
+                        </div>
+
+                        <div class="login-toggle">
+                            Don't have an account? <button type="button" class="btn-link" onclick="switchToRegister()">Register here</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Assessment Page -->
+            <div id="assessmentPage" class="page">
+                <div class="user-info" id="userInfo"></div>
+
+                <div class="section">
+                    <h2 class="section-title">Personal Information</h2>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="age">Age (years) *</label>
+                            <input type="number" id="age" required min="18" max="120" placeholder="Enter your age">
+                        </div>
+                        <div class="form-group">
+                            <label for="gender">Gender *</label>
+                            <select id="gender" required>
+                                <option value="">Select gender</option>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                                <option value="other">Other</option>
+                            </select>
                         </div>
                     </div>
-                    <div class="video-info">
-                        <h3>Watch Video 1 ▸</h3>
-                        <p>Click to watch on YouTube. <em>(Title will be updated based on video content)</em></p>
-                    </div>
-                </a>
 
-                <!-- VIDEO 2 -->
-                <a href="https://youtu.be/9xhvldqIUHg" target="_blank" rel="noopener noreferrer" class="video-card">
-                    <div class="video-thumbnail">
-                        <img src="https://img.youtube.com/vi/9xhvldqIUHg/hqdefault.jpg" alt="Video 2 thumbnail" loading="lazy" />
-                        <div class="play-button"></div>
-                        <div class="youtube-badge">
-                            <i class="fab fa-youtube" style="color:#ff0000"></i> YouTube
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="height">Height (cm) *</label>
+                            <input type="number" id="height" required min="100" max="250" placeholder="e.g., 175">
+                        </div>
+                        <div class="form-group">
+                            <label for="weight">Weight (kg) *</label>
+                            <input type="number" id="weight" required min="30" max="300" step="0.1" placeholder="e.g., 75.5">
                         </div>
                     </div>
-                    <div class="video-info">
-                        <h3>Watch Video 2 ▸</h3>
-                        <p>Click to watch on YouTube. <em>(Title will be updated based on video content)</em></p>
-                    </div>
-                </a>
+                </div>
 
-                <!-- VIDEO 3 -->
-                <a href="https://youtu.be/rgzuHK51oxw" target="_blank" rel="noopener noreferrer" class="video-card">
-                    <div class="video-thumbnail">
-                        <img src="https://img.youtube.com/vi/rgzuHK51oxw/hqdefault.jpg" alt="Video 3 thumbnail" loading="lazy" />
-                        <div class="play-button"></div>
-                        <div class="youtube-badge">
-                            <i class="fab fa-youtube" style="color:#ff0000"></i> YouTube
+                <div class="section">
+                    <h2 class="section-title">Health Conditions & Concerns</h2>
+                    <p style="color: #666; margin-bottom: 20px;">Check all that apply to you or that you'd like to prevent:</p>
+
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="heart_disease" name="conditions" value="heart_disease">
+                            <label for="heart_disease">Heart Disease & Cardiovascular</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="diabetes" name="conditions" value="diabetes">
+                            <label for="diabetes">Diabetes</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="arthritis" name="conditions" value="arthritis">
+                            <label for="arthritis">Arthritis & Osteoporosis</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="cancer_prevention" name="conditions" value="cancer_prevention">
+                            <label for="cancer_prevention">Cancer Prevention</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="alzheimers" name="conditions" value="alzheimers">
+                            <label for="alzheimers">Alzheimer's & Dementia</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="parkinsons" name="conditions" value="parkinsons">
+                            <label for="parkinsons">Parkinson's Disease</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="ms" name="conditions" value="ms">
+                            <label for="ms">Multiple Sclerosis</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="autoimmune" name="conditions" value="autoimmune">
+                            <label for="autoimmune">Autoimmune Diseases</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="fibromyalgia" name="conditions" value="fibromyalgia">
+                            <label for="fibromyalgia">Chronic Fatigue & Fibromyalgia</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="lung_disease" name="conditions" value="lung_disease">
+                            <label for="lung_disease">Lung Disease & Asthma</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="eye_health" name="conditions" value="eye_health">
+                            <label for="eye_health">Eye Health</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="high_cholesterol" name="conditions" value="high_cholesterol">
+                            <label for="high_cholesterol">High Cholesterol</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="high_bp" name="conditions" value="high_bp">
+                            <label for="high_bp">High Blood Pressure</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="allergies" name="conditions" value="allergies">
+                            <label for="allergies">Allergies & Sinusitis</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="wellness" name="conditions" value="wellness">
+                            <label for="wellness">General Wellness & Prevention</label>
                         </div>
                     </div>
-                    <div class="video-info">
-                        <h3>Watch Video 3 ▸</h3>
-                        <p>Click to watch on YouTube. <em>(Title will be updated based on video content)</em></p>
+                </div>
+
+                <div class="section">
+                    <h2 class="section-title">Lifestyle Assessment</h2>
+
+                    <div class="form-group">
+                        <label for="exercise">Current Exercise Level *</label>
+                        <select id="exercise" required>
+                            <option value="">Select your exercise level</option>
+                            <option value="sedentary">Sedentary (Little or no exercise)</option>
+                            <option value="light">Light (1-3 days per week)</option>
+                            <option value="moderate">Moderate (3-5 days per week)</option>
+                            <option value="active">Active (5+ days per week)</option>
+                        </select>
                     </div>
-                </a>
-            </div>
-        </div>
-    </section>
 
-    <!-- Products Section -->
-    <section class="products" id="products">
-        <div class="container">
-            <h2 class="section-title">Our Featured Products</h2>
-            <p class="section-subtitle">Quality nutritional products from Nutrilite™ — clinically tested with seed-to-supplement traceability.</p>
-            
-            <div class="products-grid">
-                <div class="product-card">
-                    <div class="product-icon">💊</div>
-                    <h3>Double X Multivitamin</h3>
-                    <p>24 essential nutrients. The foundation of daily nutrition. Seed-to-supplement traceability on Nutrilite's certified organic farms.</p>
-                </div>
-                <div class="product-card">
-                    <div class="product-icon">🌾</div>
-                    <h3>Plant Protein</h3>
-                    <p>21g of easily digestible plant protein. Supports daily nutrition needs. Works alongside Omega-3 and Fiber for a complete approach.</p>
-                </div>
-                <div class="product-card">
-                    <div class="product-icon">🐟</div>
-                    <h3>Omega-3</h3>
-                    <p>Quality fish oil supplement. Concentrated formula sourced from sustainable fisheries. Part of a balanced nutritional plan.</p>
-                </div>
-                <div class="product-card">
-                    <div class="product-icon">🥗</div>
-                    <h3>Fiber</h3>
-                    <p>Modern diets often lack adequate fiber. Our Fiber supplement dissolves cleanly and supports daily nutritional needs.</p>
-                </div>
-                <div class="product-card">
-                    <div class="product-icon">💧</div>
-                    <h3>eSpring Water System</h3>
-                    <p>Quality drinking water at home. eSpring filters reduce many impurities while keeping essential minerals.</p>
-                </div>
-                <div class="product-card">
-                    <div class="product-icon">⚡</div>
-                    <h3>XS Power Drinks</h3>
-                    <p>Energy drinks with B vitamins. Popular with fitness enthusiasts and busy professionals worldwide.</p>
-                </div>
-            </div>
-
-            <div style="text-align: center; margin-top: 50px;">
-                <p style="color: #666; margin-bottom: 20px;"><strong>A significant portion of our business comes from Nutrilite nutritional products.</strong> These are quality products backed by a 90-day money-back satisfaction guarantee.</p>
-                <a href="#contact" class="cta-primary">Get in Touch for Product Information</a>
-            </div>
-        </div>
-    </section>
-
-    <!-- Opportunity Section -->
-    <section class="opportunity" id="opportunity">
-        <div class="container">
-            <div>
-                <h2>Build Wealth Without Leaving Your Job</h2>
-                <p style="font-size: 18px; color: #666; margin-bottom: 20px;">Consistent activity and real mentorship can lead to meaningful side income—building over time.</p>
-
-                <h3 style="color: #1a472a; margin-top: 30px; margin-bottom: 15px;">What Makes This Different:</h3>
-                <ul class="opportunity-list">
-                    <li>You can earn from retail product sales alone</li>
-                    <li>Designed to fit alongside a regular job</li>
-                    <li>Mentorship from experienced business owners</li>
-                    <li>Soft skills development (communication, leadership, financial literacy)</li>
-                    <li>A supportive community, not a quick-fix scheme</li>
-                    <li>20-year proven business model</li>
-                </ul>
-
-                <div class="income-timeline">
-                    <h4>Important: About Income</h4>
-                    <div style="font-size: 13px; color: #555; line-height: 1.7;">
-                        Income from this business depends entirely on individual effort, skill development, and the time invested. <strong>Most independent business owners earn modest amounts</strong>—and many who join earn little or nothing in their first months.
-                        <br><br>
-                        Success requires consistent effort over time. Like any business, results are not guaranteed.
-                        <br><br>
-                        For detailed earnings information, please request our official income disclosure statement.
+                    <div class="form-group">
+                        <label for="diet">Diet Quality *</label>
+                        <select id="diet" required>
+                            <option value="">Select your diet quality</option>
+                            <option value="poor">Poor (High processed foods)</option>
+                            <option value="fair">Fair (Some healthy foods)</option>
+                            <option value="good">Good (Mostly whole foods)</option>
+                            <option value="excellent">Excellent (Balanced, nutrient-rich)</option>
+                        </select>
                     </div>
+
+                    <div class="form-group">
+                        <label for="sleep">Sleep Quality *</label>
+                        <select id="sleep" required>
+                            <option value="">Select your sleep quality</option>
+                            <option value="poor">Poor (Less than 6 hours)</option>
+                            <option value="fair">Fair (6-7 hours)</option>
+                            <option value="good">Good (7-8 hours)</option>
+                            <option value="excellent">Excellent (8+ hours)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="stress">Stress Level *</label>
+                        <select id="stress" required>
+                            <option value="">Select your stress level</option>
+                            <option value="high">High (Constant stress)</option>
+                            <option value="moderate">Moderate (Regular stress)</option>
+                            <option value="low">Low (Minimal stress)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button type="button" class="btn-primary" onclick="submitAssessment()">Get My Recommendations</button>
+                    <button type="button" class="btn-secondary" onclick="logout()">Logout</button>
                 </div>
             </div>
 
-            <div>
-                <div style="background: #fff; border-radius: 10px; padding: 40px; box-shadow: 0 4px 16px rgba(0,0,0,0.1);">
-                    <h3 style="color: #1a472a; margin-bottom: 20px;">What You Actually Do</h3>
-                    <div style="margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #e0e0e0;">
-                        <strong style="color: #2d7a4a;">Share product experiences</strong>
-                        <p style="font-size: 13px; color: #666; margin-top: 5px;">Share your genuine experiences with the products you use and enjoy.</p>
+            <!-- Results Page -->
+            <div id="resultsPage" class="page">
+                <div class="user-info" id="userInfo2"></div>
+
+                <div style="margin-bottom: 30px;">
+                    <button onclick="window.print()" class="btn-primary">Print / Save as PDF</button>
+                    <button onclick="backToAssessment()" class="btn-secondary">Edit Assessment</button>
+                    <button onclick="logout()" class="btn-secondary">Logout</button>
+                </div>
+
+                <div id="profileResults"></div>
+                <div id="recommendationsResults"></div>
+
+                <div class="opt-in-section">
+                    <h3>📞 Get Expert Consultation</h3>
+                    <p style="color: #666; margin-bottom: 15px;">Would you like our wellness experts to contact you for a personalized consultation about your supplement plan and health goals?</p>
+
+                    <div class="checkbox-item consent">
+                        <input type="checkbox" id="consultationOptIn" checked>
+                        <label for="consultationOptIn">Yes, I would like the Aishwarya team to contact me for consultation</label>
                     </div>
-                    <div style="margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #e0e0e0;">
-                        <strong style="color: #2d7a4a;">Discuss the business opportunity</strong>
-                        <p style="font-size: 13px; color: #666; margin-top: 5px;">Brief conversations with people who might be interested in starting their own side business.</p>
-                    </div>
-                    <div style="margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #e0e0e0;">
-                        <strong style="color: #2d7a4a;">Mentor others</strong>
-                        <p style="font-size: 13px; color: #666; margin-top: 5px;">Support people who want to build their own businesses.</p>
-                    </div>
-                    <div style="margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #e0e0e0;">
-                        <strong style="color: #2d7a4a;">Network at events</strong>
-                        <p style="font-size: 13px; color: #666; margin-top: 5px;">Natural conversations at meetups, fitness events, and wellness gatherings.</p>
-                    </div>
-                    <div>
-                        <strong style="color: #2d7a4a;">Follow up & support</strong>
-                        <p style="font-size: 13px; color: #666; margin-top: 5px;">Check in with customers. Genuine care, not pushy sales.</p>
-                    </div>
-                    
-                    <p style="margin-top: 25px; padding-top: 25px; border-top: 2px solid #e0e0e0; font-size: 14px; color: #333;"><strong>The real benefits?</strong> Soft skills. Leadership. Confidence. A network of ambitious people across 8 countries. These skills enhance your day job too.</p>
+
+                    <button type="button" class="btn-primary" onclick="submitConsultationPreference()" style="margin-top: 20px;">Complete Assessment</button>
                 </div>
             </div>
         </div>
-    </section>
-
-    <!-- Why Us Section -->
-    <section class="why-us" id="why-us">
-        <div class="container">
-            <h2 class="section-title">Why Choose Aishwarya?</h2>
-            <p class="section-subtitle">We've been doing this for 20 years. Here's what makes us different.</p>
-
-            <div class="features-grid">
-                <div class="feature">
-                    <div class="feature-title">20 Years of Experience</div>
-                    <p class="feature-description">Not a trend. Not a quick-fix scheme. A legitimate business built on mentorship, with 500+ partners in 8 countries.</p>
-                </div>
-                <div class="feature">
-                    <div class="feature-title">Product Quality First</div>
-                    <p class="feature-description">Nutrilite: Clinically tested, with seed-to-supplement traceability, backed by a 90-day money-back satisfaction guarantee.</p>
-                </div>
-                <div class="feature">
-                    <div class="feature-title">Real Mentorship</div>
-                    <p class="feature-description">Girish is a Senior Director at a Big 4 firm. He built this business part-time. He shares leadership skills that benefit all areas of life.</p>
-                </div>
-                <div class="feature">
-                    <div class="feature-title">Honest Expectations</div>
-                    <p class="feature-description">No "make £10k/month in 30 days" nonsense. Realistic, transparent conversations about effort and outcomes.</p>
-                </div>
-                <div class="feature">
-                    <div class="feature-title">Community, Not Scheme</div>
-                    <p class="feature-description">You're joining ambitious people across 8 countries who believe in wellness and building wealth together.</p>
-                </div>
-                <div class="feature">
-                    <div class="feature-title">Personalization Matters</div>
-                    <p class="feature-description">We don't just sell products. We help you find the right options for your needs and build genuine relationships.</p>
-                </div>
-                <div class="feature">
-                    <div class="feature-title">No Forced Recruitment</div>
-                    <p class="feature-description">You can succeed by just selling products. No team needed. Recruitment is optional, not required.</p>
-                </div>
-                <div class="feature">
-                    <div class="feature-title">Soft Skills Development</div>
-                    <p class="feature-description">Communication, leadership, financial literacy, confidence. These help your day job, your relationships, everything.</p>
-                </div>
-                <div class="feature">
-                    <div class="feature-title">Wellness Focus</div>
-                    <p class="feature-description">We believe in supporting people's wellness journeys through quality nutrition and a balanced lifestyle.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Contact Section -->
-    <section class="contact" id="contact">
-        <div class="container">
-            <h2>Let's Talk. No Pressure. Just Conversation.</h2>
-            <p>Whether you're curious about products, the business, or just want to chat about wellness—reach out. Girish personally responds to every message.</p>
-            
-            <div class="contact-buttons">
-                <!-- WhatsApp: Update the number below with your actual WhatsApp number -->
-                <a href="https://wa.me/447412121152?text=Hi%20Girish%2C%20I%27m%20interested%20in%20learning%20more%20about%20Aishwarya%20International" 
-                   target="_blank" rel="noopener noreferrer"
-                   class="contact-btn whatsapp-btn">
-                    <i class="fab fa-whatsapp"></i> WhatsApp Girish
-                </a>
-                
-                <!-- Zoom: Update the link below with your actual Zoom scheduler URL -->
-                <a href="https://scheduler.zoom.us/girish-belur/30-mins-with-girish" 
-                   target="_blank" rel="noopener noreferrer"
-                   class="contact-btn zoom-btn">
-                    <i class="fas fa-video"></i> Schedule a Zoom Call
-                </a>
-                
-                <a href="mailto:girish@aishwaryaintl.com" class="contact-btn email-btn">
-                    <i class="fas fa-envelope"></i> Email
-                </a>
-            </div>
-
-            <p style="margin-top: 40px; opacity: 0.9; font-size: 14px;">No hard sell. No pressure. Just a real conversation.</p>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer>
-        <p>&copy; 2026 Aishwarya International. Building wellness, wealth, and leaders worldwide.</p>
-        
-        <div class="ibo-disclosure">
-            <strong>Independent Business Owner Disclosure:</strong> Girish & Chethana are Independent Business Owners (IBOs) and the products mentioned are distributed through their independent business. Nutrilite™, eSpring™, XS™, and Double X™ are trademarks of their respective owners. This website is operated independently and is not an official corporate site of the product manufacturers.
-        </div>
-        
-        <p class="compliance-note">
-            <strong>Important Disclaimers:</strong><br>
-            • <strong>Products:</strong> Nutritional supplements are not intended to diagnose, treat, cure, or prevent any disease. Always consult your healthcare provider before starting any supplement regimen, particularly if you have a medical condition or are taking medication.<br>
-            • <strong>Income:</strong> Income from this business opportunity depends on individual effort, skill, and time invested. Most participants earn modest amounts, and many earn little or nothing. Past results do not guarantee future success. Request our official income disclosure for detailed earnings information.<br>
-            • <strong>Testimonials:</strong> Any personal experiences shared are individual results and are not typical. Your results will vary.
-        </p>
-    </footer>
+    </div>
 
     <script>
-        // Smooth scrolling for anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth' });
+        // Recommendation database (same as before)
+        const recommendations = {
+            heart_disease: {
+                name: "Heart Disease & Cardiovascular Health",
+                mustHave: [
+                    "Antioxidant Complex (Vitamins C, E, Beta-carotene)",
+                    "CoQ10 (for heart muscle energy)",
+                    "Omega-3 Fatty Acids",
+                    "B-Complex Vitamins (for homocysteine reduction)"
+                ],
+                recommended: [
+                    "Magnesium (for heart rhythm)",
+                    "Garlic Extract",
+                    "Hawthorn Berry Extract",
+                    "L-Carnitine"
+                ],
+                optional: [
+                    "Policosanol",
+                    "Red Yeast Rice",
+                    "Grape Seed Extract"
+                ],
+                lifestyle: [
+                    "Perform 30 minutes of moderate aerobic exercise 5+ days per week",
+                    "Reduce sodium intake to less than 2,300mg per day",
+                    "Manage stress through meditation or yoga",
+                    "Maintain a healthy weight (BMI 18.5-24.9)",
+                    "Get 7-8 hours of quality sleep nightly"
+                ],
+                eatingHabits: "Increase intake of fatty fish (salmon, mackerel), leafy greens, berries, nuts, and whole grains. Limit red meat, processed foods, and trans fats. Aim for 7+ servings of fruits and vegetables daily."
+            },
+            diabetes: {
+                name: "Diabetes (Type 1 or 2) Management",
+                mustHave: [
+                    "Chromium (for blood sugar regulation)",
+                    "Antioxidant Complex (for oxidative stress from high blood sugar)",
+                    "Alpha-Lipoic Acid (for insulin sensitivity)",
+                    "B-Complex Vitamins (especially B1 for glucose metabolism)"
+                ],
+                recommended: [
+                    "Cinnamon Extract",
+                    "Bitter Melon",
+                    "Gymnema Sylvestre",
+                    "Vanadium"
+                ],
+                optional: [
+                    "Inositol",
+                    "Zinc",
+                    "Selenium"
+                ],
+                lifestyle: [
+                    "Exercise 30+ minutes daily - combination of aerobic and strength training",
+                    "Monitor blood sugar levels regularly",
+                    "Manage stress effectively",
+                    "Maintain consistent sleep schedule (7-9 hours)",
+                    "Lose weight if overweight (even 5-10% loss improves insulin sensitivity)"
+                ],
+                eatingHabits: "Focus on low glycemic index foods. Include protein with every meal. Choose whole grains over refined carbohydrates. Increase fiber intake (legumes, vegetables, whole grains). Limit sugary drinks and desserts."
+            },
+            arthritis: {
+                name: "Arthritis & Osteoporosis",
+                mustHave: [
+                    "Calcium and Vitamin D (for bone health)",
+                    "Antioxidant Complex (for joint inflammation)",
+                    "Glucosamine & Chondroitin (for cartilage support)",
+                    "Omega-3 Fatty Acids (for inflammation reduction)"
+                ],
+                recommended: [
+                    "Turmeric/Curcumin (potent anti-inflammatory)",
+                    "Boswellia (joint flexibility)",
+                    "Ginger Extract",
+                    "Collagen Type II"
+                ],
+                optional: [
+                    "MSM (Methylsulfonylmethane)",
+                    "SAM-e",
+                    "Hyaluronic Acid"
+                ],
+                lifestyle: [
+                    "Perform low-impact exercise (walking, swimming, cycling) 5 days per week",
+                    "Include strength training 2-3 times per week to maintain bone density",
+                    "Apply heat therapy to affected joints",
+                    "Maintain healthy weight to reduce joint stress",
+                    "Ensure 7-8 hours of sleep for tissue repair"
+                ],
+                eatingHabits: "Include cold-water fish (salmon, sardines) rich in omega-3s. Eat calcium-rich foods (leafy greens, dairy, fortified products). Include anti-inflammatory spices (turmeric, ginger). Consume colorful vegetables and fruits."
+            },
+            cancer_prevention: {
+                name: "Cancer Prevention & Recovery Support",
+                mustHave: [
+                    "Antioxidant Complex (Vitamins C, E, Beta-carotene, Selenium)",
+                    "CoQ10 (cellular energy)",
+                    "Folate & B-Vitamins (for DNA repair)",
+                    "Phytochemical-Rich Supplements (from plant sources)"
+                ],
+                recommended: [
+                    "Green Tea Extract (EGCG for cellular protection)",
+                    "Resveratrol (from grape skin)",
+                    "Silymarin (milk thistle for liver support)",
+                    "Lycopene"
+                ],
+                optional: [
+                    "Indole-3-Carbinol (from cruciferous vegetables)",
+                    "Quercetin",
+                    "Ellagic Acid"
+                ],
+                lifestyle: [
+                    "Exercise 30+ minutes daily - walking, jogging, swimming",
+                    "Maintain healthy weight (obesity increases cancer risk)",
+                    "Limit alcohol consumption",
+                    "Avoid tobacco and secondhand smoke",
+                    "Get regular health screenings appropriate for your age"
+                ],
+                eatingHabits: "Eat abundant colorful vegetables (cruciferous like broccoli, orange vegetables, dark leafy greens). Include berries daily. Consume whole grains instead of refined carbohydrates. Limit red and processed meats."
+            },
+            alzheimers: {
+                name: "Alzheimer's & Dementia Risk Prevention",
+                mustHave: [
+                    "Antioxidant Complex (Vitamins C, E, Beta-carotene)",
+                    "B-Complex Vitamins (especially B6, B12, folate for homocysteine reduction)",
+                    "Omega-3 Fatty Acids (DHA for brain health)",
+                    "CoQ10 (for cellular energy)"
+                ],
+                recommended: [
+                    "Phosphatidylserine",
+                    "Ginkgo Biloba",
+                    "Acetyl-L-Carnitine",
+                    "Alpha-Lipoic Acid"
+                ],
+                optional: [
+                    "Curcumin (turmeric)",
+                    "Resveratrol",
+                    "Huperzine A"
+                ],
+                lifestyle: [
+                    "Engage in regular aerobic exercise (30+ minutes, 5 days/week)",
+                    "Practice cognitive activities (reading, puzzles, learning new skills)",
+                    "Maintain strong social connections",
+                    "Sleep 7-9 hours nightly for brain waste clearance",
+                    "Manage cardiovascular risk factors"
+                ],
+                eatingHabits: "Follow a Mediterranean-style diet rich in olive oil, fish, vegetables, and nuts. Include fatty fish 2-3 times weekly. Eat colorful vegetables and berries daily."
+            },
+            parkinsons: {
+                name: "Parkinson's Disease Management",
+                mustHave: [
+                    "Antioxidant Complex (Vitamins C, E, particularly important)",
+                    "CoQ10 (crucial for neurological health)",
+                    "Omega-3 Fatty Acids",
+                    "B-Complex Vitamins"
+                ],
+                recommended: [
+                    "Alpha-Lipoic Acid",
+                    "Green Tea Extract",
+                    "Acetyl-L-Carnitine",
+                    "Folic Acid"
+                ],
+                optional: [
+                    "Creatine",
+                    "Vitamin D",
+                    "Iron-free antioxidant formulas"
+                ],
+                lifestyle: [
+                    "Exercise 30+ minutes daily - walking, tai chi, dance",
+                    "Practice balance and flexibility exercises",
+                    "Participate in physical therapy",
+                    "Maintain social engagement",
+                    "Sleep 7-8 hours nightly"
+                ],
+                eatingHabits: "Ensure adequate protein intake for brain health. Eat antioxidant-rich foods (berries, dark leafy greens, colored vegetables). Consume omega-3 sources (fish, flax, walnuts)."
+            },
+            ms: {
+                name: "Multiple Sclerosis Support",
+                mustHave: [
+                    "Vitamin D (crucial for immune regulation)",
+                    "Omega-3 Fatty Acids (for immune balance)",
+                    "Antioxidant Complex",
+                    "B-Complex Vitamins (especially B12)"
+                ],
+                recommended: [
+                    "Lipoic Acid",
+                    "Ginger (anti-inflammatory)",
+                    "Turmeric/Curcumin",
+                    "Probiotics (for gut health)"
+                ],
+                optional: [
+                    "CoQ10",
+                    "L-Glutamine",
+                    "Magnesium"
+                ],
+                lifestyle: [
+                    "Exercise as tolerated (walking, swimming, yoga)",
+                    "Manage fatigue with rest and pacing",
+                    "Reduce stress through relaxation techniques",
+                    "Get 8-9 hours of sleep nightly",
+                    "Avoid overheating and extreme temperature changes"
+                ],
+                eatingHabits: "Include fatty fish 2-3 times weekly. Eat anti-inflammatory foods (berries, leafy greens, colored vegetables). Include whole grains for fiber. Stay well-hydrated."
+            },
+            autoimmune: {
+                name: "Autoimmune Disease Support",
+                mustHave: [
+                    "Antioxidant Complex (for immune system balance)",
+                    "Omega-3 Fatty Acids (anti-inflammatory)",
+                    "Probiotics (for gut health)",
+                    "Vitamin D (for immune regulation)"
+                ],
+                recommended: [
+                    "L-Glutamine (for gut lining integrity)",
+                    "Turmeric/Curcumin (powerful anti-inflammatory)",
+                    "Ginger Extract",
+                    "Bone Broth Collagen"
+                ],
+                optional: [
+                    "Quercetin",
+                    "Resveratrol",
+                    "Zinc"
+                ],
+                lifestyle: [
+                    "Exercise gently 3-5 times per week",
+                    "Manage stress with meditation, deep breathing",
+                    "Sleep 8-9 hours nightly",
+                    "Identify and avoid food triggers",
+                    "Work with healthcare team on complementary therapies"
+                ],
+                eatingHabits: "Focus on whole, unprocessed foods. Include anti-inflammatory foods (fatty fish, berries, leafy greens, olive oil). Eliminate common triggers when identified."
+            },
+            fibromyalgia: {
+                name: "Chronic Fatigue & Fibromyalgia",
+                mustHave: [
+                    "CoQ10 (for cellular energy production)",
+                    "Magnesium (for muscle pain and energy)",
+                    "B-Complex Vitamins (for energy metabolism)",
+                    "Antioxidant Complex (for oxidative stress)"
+                ],
+                recommended: [
+                    "L-Carnitine (for energy)",
+                    "Alpha-Lipoic Acid",
+                    "Acetyl-L-Carnitine",
+                    "5-HTP (for pain and sleep)"
+                ],
+                optional: [
+                    "Ginseng (energy)",
+                    "D-Ribose",
+                    "Malic Acid"
+                ],
+                lifestyle: [
+                    "Perform gentle, gradual exercise (stretching, tai chi, water aerobics)",
+                    "Practice pacing - balance activity with rest",
+                    "Get 8-10 hours of quality sleep nightly",
+                    "Manage stress through meditation, yoga",
+                    "Apply heat therapy to affected areas"
+                ],
+                eatingHabits: "Eat frequent, small, balanced meals to maintain energy. Include protein at each meal. Include magnesium-rich foods (leafy greens, seeds, nuts)."
+            },
+            lung_disease: {
+                name: "Lung Disease & Asthma Support",
+                mustHave: [
+                    "Antioxidant Complex (Vitamins C, E, Beta-carotene)",
+                    "Selenium (for lung protection)",
+                    "B-Complex Vitamins",
+                    "Omega-3 Fatty Acids (anti-inflammatory)"
+                ],
+                recommended: [
+                    "N-Acetyl Cysteine (NAC - for lung function)",
+                    "Quercetin (natural antihistamine)",
+                    "Ginger Extract (anti-inflammatory)",
+                    "Turmeric/Curcumin"
+                ],
+                optional: [
+                    "Licorice Root",
+                    "Coleus Forskohlii",
+                    "Magnesium"
+                ],
+                lifestyle: [
+                    "Perform breathing exercises daily",
+                    "Exercise gently (walking, swimming preferred)",
+                    "Avoid air pollutants, smoke, and allergens",
+                    "Maintain healthy weight",
+                    "Sleep in elevated position if needed"
+                ],
+                eatingHabits: "Include antioxidant-rich colorful vegetables and fruits. Eat fatty fish 2-3 times weekly. Include garlic and onions."
+            },
+            eye_health: {
+                name: "Eye Health (Cataracts, Macular Degeneration)",
+                mustHave: [
+                    "Lutein & Zeaxanthin (for macular health)",
+                    "Antioxidant Complex (Vitamins C, E, Beta-carotene)",
+                    "Zinc (for retinal health)",
+                    "Anthocyanins (from berries)"
+                ],
+                recommended: [
+                    "Vitamin A (for vision)",
+                    "Bilberry Extract",
+                    "Ginkgo Biloba",
+                    "Alpha-Lipoic Acid"
+                ],
+                optional: [
+                    "Astaxanthin",
+                    "Resveratrol",
+                    "Copper"
+                ],
+                lifestyle: [
+                    "Protect eyes from UV exposure (wear sunglasses)",
+                    "Take regular screen breaks (20-20-20 rule)",
+                    "Exercise regularly for eye circulation",
+                    "Get regular eye exams",
+                    "Don't smoke"
+                ],
+                eatingHabits: "Eat dark leafy greens (spinach, kale) daily for lutein/zeaxanthin. Include colorful berries as antioxidants. Eat orange vegetables (carrots, sweet potatoes)."
+            },
+            high_cholesterol: {
+                name: "High Cholesterol Management",
+                mustHave: [
+                    "Plant Sterols (for cholesterol reduction)",
+                    "Red Yeast Rice Extract",
+                    "Fiber (soluble fiber reduces cholesterol)",
+                    "Omega-3 Fatty Acids"
+                ],
+                recommended: [
+                    "Niacin (B3 - raises HDL)",
+                    "Garlic Extract",
+                    "Policosanol",
+                    "Artichoke Extract"
+                ],
+                optional: [
+                    "Pantethine",
+                    "Guggul",
+                    "Soy Isoflavones"
+                ],
+                lifestyle: [
+                    "Exercise 30+ minutes, 5+ days per week",
+                    "Maintain healthy weight",
+                    "Reduce stress",
+                    "Get 7-8 hours of sleep nightly",
+                    "Monitor cholesterol levels regularly"
+                ],
+                eatingHabits: "Increase soluble fiber (oats, beans, apples). Eat fatty fish 2-3 times weekly. Choose lean meats and poultry. Limit saturated fats."
+            },
+            high_bp: {
+                name: "High Blood Pressure Management",
+                mustHave: [
+                    "Potassium (for blood pressure regulation)",
+                    "Magnesium (for vascular relaxation)",
+                    "Antioxidant Complex",
+                    "CoQ10 (shown to lower BP)"
+                ],
+                recommended: [
+                    "Garlic Extract (natural BP reducer)",
+                    "Hibiscus Tea Extract",
+                    "Olive Leaf Extract",
+                    "L-Arginine (for blood vessel function)"
+                ],
+                optional: [
+                    "Hawthorn",
+                    "Celery Extract",
+                    "Omega-3 Fatty Acids"
+                ],
+                lifestyle: [
+                    "Exercise 30+ minutes, 5 days per week",
+                    "Manage stress through meditation or yoga",
+                    "Limit sodium to less than 2,300mg per day",
+                    "Maintain healthy weight",
+                    "Get 7-8 hours of sleep nightly"
+                ],
+                eatingHabits: "Eat DASH diet - rich in fruits, vegetables, whole grains, lean proteins. Include potassium-rich foods (bananas, spinach, beans). Limit sodium."
+            },
+            allergies: {
+                name: "Allergies & Sinusitis Relief",
+                mustHave: [
+                    "Quercetin (natural antihistamine)",
+                    "Antioxidant Complex (for immune balance)",
+                    "Probiotics (for gut and respiratory immunity)",
+                    "Vitamin C (supports immune function)"
+                ],
+                recommended: [
+                    "Bromelain (from pineapple - reduces inflammation)",
+                    "Stinging Nettle",
+                    "Butterbur",
+                    "N-Acetyl Cysteine (NAC)"
+                ],
+                optional: [
+                    "Quercetin + Bromelain (synergistic)",
+                    "Ginger",
+                    "Turmeric"
+                ],
+                lifestyle: [
+                    "Identify and avoid known allergen triggers",
+                    "Use air purifiers in bedroom and work areas",
+                    "Shower and wash hair before bed to remove pollen",
+                    "Exercise regularly",
+                    "Get 8 hours of sleep for immune support"
+                ],
+                eatingHabits: "Include anti-inflammatory foods (berries, leafy greens, ginger, turmeric). Eat local raw honey for natural allergy desensitization. Stay well-hydrated."
+            },
+            wellness: {
+                name: "General Wellness & Prevention",
+                mustHave: [
+                    "Complete Multivitamin (foundational health support)",
+                    "Antioxidant Complex (Vitamins C, E, Beta-carotene)",
+                    "Omega-3 Fatty Acids (heart and brain health)",
+                    "Mineral Complex (Calcium, Magnesium, Zinc)"
+                ],
+                recommended: [
+                    "CoQ10 (cellular energy)",
+                    "Probiotics (digestive and immune health)",
+                    "B-Complex Vitamins (energy metabolism)",
+                    "Vitamin D3 (bone and immune health)"
+                ],
+                optional: [
+                    "Ginseng (energy and vitality)",
+                    "Ginkgo Biloba (cognitive function)",
+                    "Saw Palmetto (men's health)",
+                    "Red Clover (women's health)"
+                ],
+                lifestyle: [
+                    "Exercise 30+ minutes, 5 days per week",
+                    "Practice stress management (meditation, yoga)",
+                    "Get 7-8 hours of quality sleep nightly",
+                    "Maintain healthy weight",
+                    "Stay socially connected",
+                    "Get regular health check-ups"
+                ],
+                eatingHabits: "Eat a balanced diet rich in whole foods - lots of colorful fruits and vegetables. Include lean proteins. Choose whole grains. Include healthy fats."
+            }
+        };
+
+        // User session management
+        let currentUser = null;
+        let assessmentData = null;
+
+        // Registration
+        document.getElementById('registrationForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const name = document.getElementById('regName').value;
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPassword').value;
+            const confirmPassword = document.getElementById('regConfirmPassword').value;
+            const phone = document.getElementById('regPhone').value;
+            const consent = document.getElementById('regConsent').checked;
+
+            const errorDiv = document.getElementById('regError');
+            errorDiv.classList.remove('active');
+            errorDiv.textContent = '';
+
+            // Validation
+            if (password !== confirmPassword) {
+                errorDiv.textContent = 'Passwords do not match!';
+                errorDiv.classList.add('active');
+                return;
+            }
+
+            if (password.length < 6) {
+                errorDiv.textContent = 'Password must be at least 6 characters long!';
+                errorDiv.classList.add('active');
+                return;
+            }
+
+            if (!consent) {
+                errorDiv.textContent = 'You must agree to share your assessment for follow-up.';
+                errorDiv.classList.add('active');
+                return;
+            }
+
+            // Store in localStorage (in production, this would go to Google Sheets)
+            const user = {
+                name: name,
+                email: email,
+                password: btoa(password), // Simple encoding (not secure - use server in production)
+                phone: phone,
+                registeredAt: new Date().toISOString()
+            };
+
+            localStorage.setItem('user_' + email, JSON.stringify(user));
+
+            // Log to console (in production, send to Google Apps Script)
+            console.log('New registration:', user);
+
+            // Auto-login
+            currentUser = { email: email, name: name };
+            updateUserInfo();
+            switchPage('assessmentPage');
+        });
+
+        // Login
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const errorDiv = document.getElementById('loginError');
+            errorDiv.classList.remove('active');
+            errorDiv.textContent = '';
+
+            const storedUser = JSON.parse(localStorage.getItem('user_' + email) || 'null');
+
+            if (!storedUser || storedUser.password !== btoa(password)) {
+                errorDiv.textContent = 'Invalid email or password!';
+                errorDiv.classList.add('active');
+                return;
+            }
+
+            currentUser = { email: email, name: storedUser.name };
+            updateUserInfo();
+            switchPage('assessmentPage');
+        });
+
+        function updateUserInfo() {
+            if (currentUser) {
+                const userInfoHTML = `Logged in as: <strong>${currentUser.name}</strong> | <button type="button" class="btn-link" onclick="logout()">Logout</button>`;
+                document.getElementById('userInfo').innerHTML = userInfoHTML;
+                document.getElementById('userInfo2').innerHTML = userInfoHTML;
+            }
+        }
+
+        function switchPage(pageName) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageName).classList.add('active');
+        }
+
+        function switchToLogin() {
+            switchPage('loginPage');
+        }
+
+        function switchToRegister() {
+            switchPage('registrationPage');
+        }
+
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                currentUser = null;
+                document.getElementById('registrationForm').reset();
+                document.getElementById('loginForm').reset();
+                switchPage('registrationPage');
+            }
+        }
+
+        // Assessment submission
+        function submitAssessment() {
+            const age = parseInt(document.getElementById('age').value);
+            const height = parseFloat(document.getElementById('height').value);
+            const weight = parseFloat(document.getElementById('weight').value);
+            const gender = document.getElementById('gender').value;
+            const exercise = document.getElementById('exercise').value;
+            const diet = document.getElementById('diet').value;
+            const sleep = document.getElementById('sleep').value;
+            const stress = document.getElementById('stress').value;
+
+            const conditions = Array.from(document.querySelectorAll('input[name="conditions"]:checked')).map(cb => cb.value);
+
+            if (conditions.length === 0) {
+                alert('Please select at least one health condition!');
+                return;
+            }
+
+            if (!age || !height || !weight || !gender || !exercise || !diet || !sleep || !stress) {
+                alert('Please fill in all required fields!');
+                return;
+            }
+
+            // Calculate BMI
+            const bmi = weight / ((height / 100) ** 2);
+
+            // Determine risk level
+            let riskLevel = 'Healthy';
+            let riskColor = 'risk-healthy';
+            if (bmi > 30) {
+                riskLevel = 'High Risk (Obese)';
+                riskColor = 'risk-danger';
+            } else if (bmi > 25) {
+                riskLevel = 'At Risk (Overweight)';
+                riskColor = 'risk-warning';
+            } else if (bmi < 18.5) {
+                riskLevel = 'At Risk (Underweight)';
+                riskColor = 'risk-warning';
+            }
+
+            // Store assessment
+            assessmentData = {
+                user: currentUser,
+                age: age,
+                height: height,
+                weight: weight,
+                gender: gender,
+                bmi: bmi.toFixed(1),
+                exercise: exercise,
+                diet: diet,
+                sleep: sleep,
+                stress: stress,
+                conditions: conditions,
+                riskLevel: riskLevel,
+                riskColor: riskColor,
+                completedAt: new Date().toISOString()
+            };
+
+            // Log to console
+            console.log('Assessment submitted:', assessmentData);
+
+            // Generate profile
+            let profileHTML = `
+                <div class="health-profile">
+                    <h3>📋 Your Health Profile</h3>
+                    <div class="profile-item"><strong>Name:</strong> ${currentUser.name}</div>
+                    <div class="profile-item"><strong>Age:</strong> ${age} years</div>
+                    <div class="profile-item"><strong>Gender:</strong> ${gender.charAt(0).toUpperCase() + gender.slice(1)}</div>
+                    <div class="profile-item"><strong>BMI:</strong> ${bmi.toFixed(1)} kg/m²</div>
+                    <div class="profile-item"><strong>Exercise Level:</strong> ${exercise.charAt(0).toUpperCase() + exercise.slice(1)}</div>
+                    <div class="profile-item"><strong>Diet Quality:</strong> ${diet.charAt(0).toUpperCase() + diet.slice(1)}</div>
+                    <div class="profile-item"><strong>Sleep Quality:</strong> ${sleep.charAt(0).toUpperCase() + sleep.slice(1)}</div>
+                    <div class="profile-item"><strong>Stress Level:</strong> ${stress.charAt(0).toUpperCase() + stress.slice(1)}</div>
+                    <div><span class="risk-badge ${riskColor}">Health Risk Level: ${riskLevel}</span></div>
+                </div>
+            `;
+
+            // Generate recommendations
+            let recommendationsHTML = '<h2 class="section-title">💊 Personalized Recommendations</h2>';
+
+            conditions.forEach(conditionKey => {
+                const condition = recommendations[conditionKey];
+                if (condition) {
+                    recommendationsHTML += `
+                        <div class="condition-card">
+                            <div class="condition-name">${condition.name}</div>
+
+                            <div class="product-tier">
+                                <div class="tier-title">★ Must-Have Supplements</div>
+                                <p style="color: #666; margin: 10px 0; font-size: 0.9em;">Essential products for comprehensive support:</p>
+                                <ul class="product-list">
+                                    ${condition.mustHave.map(p => `<li>• ${p}</li>`).join('')}
+                                </ul>
+                            </div>
+
+                            <div class="product-tier">
+                                <div class="tier-title">✓ Recommended Supplements</div>
+                                <p style="color: #666; margin: 10px 0; font-size: 0.9em;">Additional support products:</p>
+                                <ul class="product-list">
+                                    ${condition.recommended.map(p => `<li>• ${p}</li>`).join('')}
+                                </ul>
+                            </div>
+
+                            <div class="product-tier">
+                                <div class="tier-title">+ Optional Supplements</div>
+                                <p style="color: #666; margin: 10px 0; font-size: 0.9em;">Additional options:</p>
+                                <ul class="product-list">
+                                    ${condition.optional.map(p => `<li>• ${p}</li>`).join('')}
+                                </ul>
+                            </div>
+
+                            <div class="lifestyle-section">
+                                <h4>🏃 Lifestyle Recommendations</h4>
+                                ${condition.lifestyle.map(item => `<div class="lifestyle-item">${item}</div>`).join('')}
+                            </div>
+
+                            <div class="eating-habits">
+                                <h4>🥗 Eating Habits to Adopt</h4>
+                                <p>${condition.eatingHabits}</p>
+                            </div>
+                        </div>
+                    `;
                 }
             });
-        });
+
+            document.getElementById('profileResults').innerHTML = profileHTML;
+            document.getElementById('recommendationsResults').innerHTML = recommendationsHTML;
+
+            switchPage('resultsPage');
+            window.scrollTo(0, 0);
+        }
+
+        function backToAssessment() {
+            switchPage('assessmentPage');
+        }
+
+        function submitConsultationPreference() {
+            const optIn = document.getElementById('consultationOptIn').checked;
+
+            const finalData = {
+                ...assessmentData,
+                consultationOptIn: optIn,
+                submittedAt: new Date().toISOString()
+            };
+
+            // Log to console (in production, send to Google Apps Script)
+            console.log('Assessment complete:', finalData);
+
+            alert('Thank you! Your assessment has been recorded. The Aishwarya team will contact you soon with personalized recommendations.');
+
+            // Reset and logout
+            logout();
+        }
+
+        // Initialize
+        updateUserInfo();
     </script>
 </body>
 </html>
