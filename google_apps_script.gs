@@ -1,11 +1,12 @@
 /**
- * Aishwarya International - Health Assessment backend (v4: full lifestyle questionnaire)
+ * Aishwarya International - Health Assessment backend (v5: password reset by email code)
  *
  * Create this while signed in as bpg2504@gmail.com, so that account owns the sheet and the data.
  *
  * What this does:
- *  - Receives registrations, logins, assessments, consultation requests and
- *    delete-my-data requests from health-assessment.html (doPost) and stores them in the sheet.
+ *  - Receives registrations, logins, assessments, consultation requests,
+ *    password resets and delete-my-data requests from health-assessment.html (doPost).
+ *  - Emails a 6-digit code (valid for 30 minutes) when someone forgets their password.
  *  - Records consent choices with a timestamp and the privacy notice version.
  *  - Sends a daily digest email covering the last 24 hours.
  *  - Deletes everything about a person after RETENTION_DAYS without activity.
@@ -26,13 +27,17 @@ const ADMIN_EMAIL = 'aishwaryaintl@outlook.com'; // who receives the daily diges
 const TIMEZONE = 'Europe/London';
 const DIGEST_HOUR = 8;                            // 8 AM UK time
 const RETENTION_DAYS = 730;                       // 24 months without activity, then deleted (matches privacy notice)
+const RESET_MINUTES = 30;                         // how long a password reset code stays valid
+const RESET_MAX_PER_HOUR = 3;                     // reset emails allowed per person per hour
+const RESET_MAX_ATTEMPTS = 5;                     // wrong codes allowed before a new code is needed
 
 const SHEETS = {
   registrations: 'Registrations',
   assessments: 'Assessments',
   consultations: 'Consultations',
   dailyLog: 'Daily Log',
-  deletionLog: 'Deletion Log'
+  deletionLog: 'Deletion Log',
+  resets: 'Password Resets'
 };
 
 const HEADERS = {
@@ -44,7 +49,8 @@ const HEADERS = {
                   'Health Conditions', 'Everyday Challenges'],
   'Consultations': ['Timestamp', 'Email', 'Name', 'Phone', 'Wants Consultation', 'Follow-up Status', 'Notes'],
   'Daily Log': ['Date', 'Registrations', 'Assessments', 'Consultation Requests', 'Records Purged', 'Sent At'],
-  'Deletion Log': ['Timestamp', 'Reason', 'Rows Deleted']
+  'Deletion Log': ['Timestamp', 'Reason', 'Rows Deleted'],
+  'Password Resets': ['Timestamp', 'Email', 'Code Hash', 'Expires', 'Wrong Attempts', 'Used']
 };
 
 // ---- One-time setup ----
@@ -113,6 +119,8 @@ function doPost(e) {
       case 'assessment': return json_(saveAssessment_(data));
       case 'consultation': return json_(saveConsultation_(data));
       case 'deleteAccount': return json_(deleteAccount_(data));
+      case 'requestReset': return json_(requestReset_(data));
+      case 'resetPassword': return json_(resetPassword_(data));
       default: return json_({ ok: false, error: 'Unknown action' });
     }
   } catch (err) {
@@ -129,7 +137,7 @@ function register_(d) {
     return { ok: false, error: 'We need your confirmation that you are 18+ and your consent to store your health answers.' };
   }
   if (findRegistration_(email)) {
-    return { ok: false, error: 'An account with this email already exists. Please log in instead.' };
+    return { ok: false, code: 'exists', error: 'You are already registered with this email address.' };
   }
   sheet_(SHEETS.registrations).appendRow([
     new Date(), safe_(d.name), email, safe_(d.phone), d.passwordHash, 'Yes',
@@ -166,6 +174,68 @@ function saveConsultation_(d) {
   return { ok: true };
 }
 
+function requestReset_(d) {
+  const email = normaliseEmail_(d.email);
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return { ok: false, error: 'Please enter a valid email address.' };
+  const sent = { ok: true, message: 'If an account exists for ' + email + ', we have emailed a 6-digit code. It can take a minute to arrive, so check your spam folder too.' };
+  const reg = findRegistration_(email);
+  if (!reg) return sent;
+
+  const sheet = sheet_(SHEETS.resets);
+  const hourAgo = new Date(Date.now() - 60 * 60 * 1000);
+  const recent = sheet.getDataRange().getValues().slice(1).filter(function (r) {
+    return String(r[1]).toLowerCase() === email && r[0] instanceof Date && r[0] > hourAgo;
+  });
+  if (recent.length >= RESET_MAX_PER_HOUR) {
+    return { ok: false, error: 'Too many reset requests. Please wait an hour, or use the last code we sent you.' };
+  }
+
+  // Random 6-digit code from a secure UUID. Only a hash of it is stored.
+  const code = String(parseInt(Utilities.getUuid().replace(/-/g, '').slice(0, 12), 16) % 900000 + 100000);
+  sheet.appendRow([new Date(), email, sha256_(email + ':' + code), new Date(Date.now() + RESET_MINUTES * 60 * 1000), 0, 'No']);
+
+  const firstName = String(reg[1]).split(' ')[0];
+  MailApp.sendEmail({
+    to: email,
+    name: 'Aishwarya International',
+    replyTo: ADMIN_EMAIL,
+    subject: 'Your password reset code: ' + code,
+    body: 'Hi ' + firstName + ',\n\nYour code to reset your Health & Nutrition Check password is ' + code +
+      '.\n\nIt works for ' + RESET_MINUTES + ' minutes. If you did not ask for this, ignore this email and your password stays the same.\n\nAishwarya International',
+    htmlBody: '<p>Hi ' + escape_(firstName) + ',</p><p>Your code to reset your Health &amp; Nutrition Check password is:</p>' +
+      '<p style="font-size:28px;font-weight:bold;letter-spacing:4px">' + code + '</p>' +
+      '<p>It works for ' + RESET_MINUTES + ' minutes. If you did not ask for this, ignore this email and your password stays the same.</p><p>Aishwarya International</p>'
+  });
+  return sent;
+}
+
+function resetPassword_(d) {
+  const email = normaliseEmail_(d.email);
+  const code = String(d.code || '').trim();
+  if (!/^\d{6}$/.test(code)) return { ok: false, error: 'Please enter the 6-digit code from the email.' };
+  if (!d.passwordHash) return { ok: false, error: 'Please choose a new password.' };
+
+  const sheet = sheet_(SHEETS.resets);
+  const values = sheet.getDataRange().getValues();
+  for (let i = values.length - 1; i >= 1; i--) {
+    const r = values[i];
+    if (String(r[1]).toLowerCase() !== email || r[5] === 'Yes') continue;
+    // Only the most recent unused code counts
+    if (!(r[3] instanceof Date) || r[3] < new Date()) return { ok: false, error: 'That code has expired. Please ask for a new one.' };
+    if (Number(r[4]) >= RESET_MAX_ATTEMPTS) return { ok: false, error: 'Too many wrong attempts. Please ask for a new code.' };
+    if (r[2] !== sha256_(email + ':' + code)) {
+      sheet.getRange(i + 1, 5).setValue(Number(r[4]) + 1);
+      return { ok: false, error: "That code isn't right. Please check the email and try again." };
+    }
+    const reg = findRegistrationRow_(email);
+    if (!reg) return { ok: false, error: 'We could not find your account. Please register again.' };
+    sheet_(SHEETS.registrations).getRange(reg.row, 5).setValue(d.passwordHash);
+    sheet.getRange(i + 1, 6).setValue('Yes');
+    return { ok: true, name: String(reg.values[1]), phone: String(reg.values[3] || '') };
+  }
+  return { ok: false, error: 'There is no active code for that email. Please ask for a new one.' };
+}
+
 function deleteAccount_(d) {
   const email = normaliseEmail_(d.email);
   const row = findRegistration_(email);
@@ -179,6 +249,7 @@ function deleteAccount_(d) {
 
 function sendDailyDigestEmail() {
   const purged = purgeOldRecords_();
+  purgeOldResetCodes_();
 
   const since = new Date(Date.now() - 24 * 60 * 60 * 1000);
   const regs = rowsSince_(SHEETS.registrations, since);
@@ -243,11 +314,20 @@ function purgeOldRecords_() {
   return removed;
 }
 
+function purgeOldResetCodes_() {
+  const sheet = sheet_(SHEETS.resets);
+  const dayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+  const values = sheet.getDataRange().getValues();
+  for (let i = values.length - 1; i >= 1; i--) {
+    if (!(values[i][0] instanceof Date) || values[i][0] < dayAgo) sheet.deleteRow(i + 1);
+  }
+}
+
 function deleteRowsForEmails_(emails) {
   const set = {};
   emails.forEach(function (e) { set[e] = true; });
   let removed = 0;
-  [SHEETS.registrations, SHEETS.assessments, SHEETS.consultations].forEach(function (name) {
+  [SHEETS.registrations, SHEETS.assessments, SHEETS.consultations, SHEETS.resets].forEach(function (name) {
     const sheet = sheet_(name);
     const emailCol = name === SHEETS.registrations ? 2 : 1;
     const values = sheet.getDataRange().getValues();
@@ -282,12 +362,22 @@ function rowsSince_(name, since) {
 }
 
 function findRegistration_(email) {
+  const found = findRegistrationRow_(email);
+  return found ? found.values : null;
+}
+
+function findRegistrationRow_(email) {
   if (!email) return null;
-  const values = sheet_(SHEETS.registrations).getDataRange().getValues().slice(1);
-  for (let i = 0; i < values.length; i++) {
-    if (String(values[i][2]).toLowerCase() === email) return values[i];
+  const values = sheet_(SHEETS.registrations).getDataRange().getValues();
+  for (let i = 1; i < values.length; i++) {
+    if (String(values[i][2]).toLowerCase() === email) return { row: i + 1, values: values[i] };
   }
   return null;
+}
+
+function sha256_(text) {
+  return Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, text, Utilities.Charset.UTF_8)
+    .map(function (b) { return ((b < 0 ? b + 256 : b).toString(16)).padStart(2, '0'); }).join('');
 }
 
 function normaliseEmail_(email) {

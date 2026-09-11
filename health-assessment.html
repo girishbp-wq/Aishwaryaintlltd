@@ -126,6 +126,13 @@
       <h2>Create your free account</h2>
       <p class="muted">The check takes about 10 minutes. You'll see your results straight away.</p>
       <div id="regError" class="error" role="alert"></div>
+      <div id="regExists" class="box box-warn" role="alert" hidden>
+        <b>You're already registered.</b> There's already an account for <span id="regExistsEmail"></span>. Log in to carry on, or reset your password if you've forgotten it.
+        <div class="actions" style="margin-top:10px">
+          <button type="button" class="btn btn-primary" onclick="goToLogin($('regEmail').value)">Log in</button>
+          <button type="button" class="btn btn-secondary" onclick="startReset($('regEmail').value)">Forgot password?</button>
+        </div>
+      </div>
       <form id="registrationForm" novalidate>
         <div class="field"><label for="regName">Full name</label><input type="text" id="regName" autocomplete="name" required></div>
         <div class="row">
@@ -161,9 +168,33 @@
         <div class="field"><label for="loginEmail">Email</label><input type="email" id="loginEmail" autocomplete="email" required></div>
         <div class="field"><label for="loginPassword">Password</label><input type="password" id="loginPassword" autocomplete="current-password" required></div>
         <div class="actions"><button type="submit" class="btn btn-primary">Log in</button></div>
+        <p class="small"><button type="button" class="btn-link" onclick="startReset($('loginEmail').value)">Forgot password?</button></p>
         <p class="small">New here? <button type="button" class="btn-link" onclick="showPage('registrationPage')">Create an account</button></p>
-        <p class="small muted">Forgotten your password? Email <a href="mailto:aishwaryaintl@outlook.com">aishwaryaintl@outlook.com</a> and we'll remove your old account so you can register again.</p>
       </form>
+    </div>
+  </section>
+
+  <!-- Forgot password -->
+  <section id="resetPage" class="page">
+    <div class="card">
+      <h2>Reset your password</h2>
+      <div id="resetError" class="error" role="alert"></div>
+      <div id="resetInfo" class="box box-info" role="status" hidden></div>
+      <div id="resetStep1">
+        <p class="muted">Enter the email you registered with. We'll email you a 6-digit code.</p>
+        <div class="field"><label for="resetEmail">Email</label><input type="email" id="resetEmail" autocomplete="email"></div>
+        <div class="actions"><button type="button" class="btn btn-primary" id="resetSendBtn" onclick="requestResetCode()">Email me a code</button></div>
+      </div>
+      <div id="resetStep2" hidden>
+        <div class="field" style="max-width:220px"><label for="resetCode">6-digit code</label><input type="text" id="resetCode" inputmode="numeric" autocomplete="one-time-code" maxlength="6"></div>
+        <div class="row">
+          <div class="field"><label for="resetPassword">New password (8+ characters)</label><input type="password" id="resetPassword" autocomplete="new-password"></div>
+          <div class="field"><label for="resetConfirm">Confirm new password</label><input type="password" id="resetConfirm" autocomplete="new-password"></div>
+        </div>
+        <div class="actions"><button type="button" class="btn btn-primary" id="resetSaveBtn" onclick="saveNewPassword()">Set new password</button></div>
+        <p class="small muted">No email after a few minutes? Check your spam folder, or <button type="button" class="btn-link" onclick="requestResetCode()">send a new code</button>.</p>
+      </div>
+      <p class="small" style="margin-top:16px"><button type="button" class="btn-link" onclick="goToLogin($('resetEmail').value)">Back to log in</button></p>
     </div>
   </section>
 
@@ -223,6 +254,7 @@
         <div class="areas">
           <label class="check"><input type="checkbox" name="allergy" value="Fish"><span>Fish</span></label>
           <label class="check"><input type="checkbox" name="allergy" value="Shellfish"><span>Shellfish</span></label>
+          <label class="check"><input type="checkbox" name="allergy" value="Milk"><span>Milk</span></label>
           <label class="check"><input type="checkbox" name="allergy" value="Soy"><span>Soy</span></label>
           <label class="check"><input type="checkbox" name="allergy" value="Wheat or gluten"><span>Wheat or gluten</span></label>
           <label class="check"><input type="checkbox" name="allergy" value="None" id="allergyNone"><span>None of these</span></label>
@@ -273,7 +305,7 @@
 <script>
 // ================= Settings =================
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzh4a13bSIuyYc_IydI8MWebGCSqIQtzEr784Oc2YE1w5IDvMWs4CeaUsfTnEaViIYn/exec';
-const PRIVACY_VERSION = '2026-09-11-v2';
+const PRIVACY_VERSION = '2026-09-11-v3';
 const AMWAY = 'https://www.amway.co.uk/en';
 const SPONSOR = '?aboSponsor=8018082';
 
@@ -296,6 +328,10 @@ const NUTRILITE = {
   coq10:       { name: 'Nutrilite Coenzyme Q10', path: '/Coenzyme-Q10/p/0191', facts: '30 mg CoQ10 per capsule.', notFor: 'veg' },
   glucosamine: { name: 'Nutrilite Glucosamine', path: '/Glucosamine/p/101841', facts: '350 mg glucosamine hydrochloride per capsule. Made from shellfish.', notFor: 'veg', allergen: 'Shellfish' },
   vision:      { name: 'Nutrilite Vision Plus', path: '/Vision-Plus/p/124321', facts: '12 mg lutein, 2.4 mg zeaxanthin, lycopene, beta-carotene and zinc.', notFor: 'veg', betaCarotene: true },
+  appetite:    { name: 'Nutrilite Appetite Controller', path: '/Appetite-Controller/p/119792', facts: '1 g of glucomannan (konjac root fibre) per sachet. Take 3 a day, each in 250 ml of water or juice, 30 minutes before a main meal. Suitable for vegetarians.' },
+  mealbar:     { name: 'Bodykey by Nutrilite Meal Replacement Bar', path: '/Meal-Replacement-Bar-Dark-Chocolate/p/121056', facts: 'A nutritionally balanced bar to use in place of a meal. Dark Chocolate or Tropical Fruits. Contains milk and soy.', allergen: 'Milk|Soy' },
+  balancewithin: { name: 'Nutrilite Balance Within', path: '/Balance-Within%E2%84%A2/p/120571', facts: '6 billion friendly bacteria per stick, plus vitamin B6 and folic acid, which contribute to normal immune and psychological function. Contains milk.', notFor: 'veg', allergen: 'Milk' },
+  metabolism:  { name: 'Nutrilite Metabolism Plus', path: '/Metabolism-plus/p/127620', facts: 'Vitamins B2 and B5, which contribute to normal energy-yielding metabolism, plus heat-treated friendly bacteria, gold kiwi and purple carrot. 2 capsules a day.' },
   fruitsveg:   { name: 'Nutrilite Fruits and Vegetables', path: '/Fruits-and-Vegetables/p/100296', facts: 'Concentrates of green tea, pomegranate, blueberry, broccoli, spinach, tomato and more.' }
 };
 const ELSEWHERE = {
@@ -532,10 +568,15 @@ const GUIDES = {
     extras: [['n', 'zinc', 'Zinc and selenium help maintain normal hair, skin and nails']],
     change: ['Drink enough water.', 'Eat enough protein and oily fish.'],
     notes: ['See your GP about sudden hair loss or bald patches.'] },
-  weight: { title: 'Losing weight', source: 'book',
+  weight: { title: 'Losing weight', source: 'goal',
     book: 'Dr Strand links weight around the middle to insulin resistance ("Syndrome X") and recommends a low-glycaemic diet with exercise.',
+    extras: [['n', 'appetite', 'Glucomannan: 3 g a day, as part of a calorie-controlled diet, contributes to weight loss'],
+      ['n', 'mealbar', 'Replacing 2 meals a day on a calorie-controlled diet with meal replacements contributes to weight loss']],
+    optional: [['n', 'fibre', 'Helps you reach 30 g of fibre a day'], ['n', 'balancewithin', 'Friendly bacteria with vitamin B6 and folic acid'],
+      ['n', 'metabolism', 'Vitamins B2 and B5 contribute to normal energy-yielding metabolism']],
     change: ['Have protein and vegetables at every meal.', 'Cut sugary drinks, white bread and refined snacks.', 'Build up to 150 minutes of activity a week, plus strength exercise twice a week.', 'The free NHS Weight Loss Plan app can help.'],
-    notes: ["Don't cut calories too hard. Your lifestyle answers show which nutrients to protect while you lose weight."] },
+    notes: ["Supplements don't replace eating less and moving more. Only Appetite Controller and the meal replacement bars have approved weight-loss claims, and only as part of a calorie-controlled diet. Fibre Powder, Balance Within and Metabolism Plus support a healthy routine but won't cause weight loss on their own.",
+      "Don't cut calories too hard. Your lifestyle answers show which nutrients to protect while you lose weight."] },
   periods: { title: 'Periods & PMS', source: 'everyday',
     optional: [['n', 'vitb', 'Vitamin B6 contributes to the regulation of hormonal activity']],
     change: ['Keep active and limit caffeine and alcohol before your period.', 'Eat iron-rich foods if your periods are heavy.'],
@@ -622,7 +663,7 @@ document.addEventListener('change', e => {
 
 // ================= Register / log in / log out =================
 $('registrationForm').addEventListener('submit', async e => {
-  e.preventDefault(); clearError('regError');
+  e.preventDefault(); clearError('regError'); $('regExists').hidden = true;
   const name = $('regName').value.trim(), email = $('regEmail').value.trim(), phone = $('regPhone').value.trim();
   const pw = $('regPassword').value, pw2 = $('regConfirm').value;
   if (!name) return showError('regError', 'Please enter your name.');
@@ -635,6 +676,7 @@ $('registrationForm').addEventListener('submit', async e => {
     try {
       const r = await callBackend({ action: 'register', name, email, phone, passwordHash: await hashPassword(email, pw),
         ageConfirmed: true, healthConsent: true, contactConsent: $('consentContact').checked, privacyVersion: PRIVACY_VERSION });
+      if (r.code === 'exists') { $('regExistsEmail').textContent = email; $('regExists').hidden = false; $('regExists').scrollIntoView({ block: 'center' }); return; }
       if (!r.ok) return showError('regError', r.error);
       currentUser = { email: email.toLowerCase(), name, phone };
       setUserBars(); showPage('assessmentPage');
@@ -654,6 +696,50 @@ $('loginForm').addEventListener('submit', async e => {
     } catch (err) { showError('loginError', err.message || 'Could not reach the server. Please try again.'); }
   });
 });
+
+// ================= Forgot password =================
+function goToLogin(email) {
+  $('regExists').hidden = true; clearError('loginError');
+  if (email) $('loginEmail').value = email.trim();
+  showPage('loginPage');
+}
+function startReset(email) {
+  $('regExists').hidden = true; clearError('resetError');
+  $('resetInfo').hidden = true; $('resetStep1').hidden = false; $('resetStep2').hidden = true;
+  ['resetCode', 'resetPassword', 'resetConfirm'].forEach(id => $(id).value = '');
+  if (email) $('resetEmail').value = email.trim();
+  showPage('resetPage');
+}
+async function requestResetCode() {
+  clearError('resetError');
+  const email = $('resetEmail').value.trim();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { $('resetStep1').hidden = false; return showError('resetError', 'Please enter the email address you registered with.'); }
+  await withButton($('resetSendBtn'), 'Sending...', async () => {
+    try {
+      const r = await callBackend({ action: 'requestReset', email });
+      if (!r.ok) return showError('resetError', r.error);
+      $('resetInfo').textContent = r.message; $('resetInfo').hidden = false;
+      $('resetStep1').hidden = true; $('resetStep2').hidden = false; $('resetCode').focus();
+    } catch (err) { showError('resetError', err.message || 'Could not reach the server. Please try again.'); }
+  });
+}
+async function saveNewPassword() {
+  clearError('resetError');
+  const email = $('resetEmail').value.trim(), code = $('resetCode').value.trim(), pw = $('resetPassword').value, pw2 = $('resetConfirm').value;
+  if (!/^\d{6}$/.test(code)) return showError('resetError', 'Please enter the 6-digit code from the email.');
+  if (pw.length < 8) return showError('resetError', 'Your new password needs at least 8 characters.');
+  if (pw !== pw2) return showError('resetError', "The passwords don't match.");
+  await withButton($('resetSaveBtn'), 'Saving...', async () => {
+    try {
+      const r = await callBackend({ action: 'resetPassword', email, code, passwordHash: await hashPassword(email, pw) });
+      if (!r.ok) return showError('resetError', r.error);
+      currentUser = { email: email.toLowerCase(), name: r.name, phone: r.phone };
+      setUserBars();
+      alert('Your password has been changed. You are now logged in.');
+      showPage('assessmentPage');
+    } catch (err) { showError('resetError', err.message || 'Could not reach the server. Please try again.'); }
+  });
+}
 
 function logout(skipConfirm) {
   if (!skipConfirm && !confirm('Log out?')) return;
@@ -746,7 +832,7 @@ function renderResults(a) {
   NUTRIENTS.forEach(nu => { if (a.levels[nu.key] !== 'A') add('n', nu.product, 'Your eating habits: ' + nu.name + ' ' + LEVEL_TEXT[a.levels[nu.key]].toLowerCase(), 'add'); });
   guideKeys.forEach(g => {
     const G = GUIDES[g]; if (!G) return;
-    const tag = (G.source === 'book' ? "Dr Strand's book: " : 'Everyday: ') + G.title;
+    const tag = (G.source === 'book' ? "Dr Strand's book: " : G.source === 'goal' ? 'Your goal: ' : 'Everyday: ') + G.title;
     (G.extras || []).forEach(x => add(x[0], x[1], tag, 'add'));
     (G.optional || []).forEach(x => add(x[0], x[1], tag + ' (optional)', 'nice'));
   });
@@ -760,8 +846,12 @@ function renderResults(a) {
     if (p.notFor === 'vegan' && a.vegan) w.push('Not suitable for vegans.');
     if (a.bloodThinner !== 'No' && THINS_BLOOD.includes(it.key)) w.push('Check with your GP or anticoagulant clinic first, because you take (or may take) a blood thinner.');
     if (p.betaCarotene && a.smoker) w.push('Contains beta-carotene. As a smoker, check with your GP before taking it.');
-    if (a.pregnant && ['carotene', 'vision', 'coq10', 'grapeseed', 'glucosamine', 'tmg', 'chondroitin'].includes(it.key)) w.push('Check with your midwife or GP first, because you are pregnant or breastfeeding.');
+    if (a.pregnant && ['carotene', 'vision', 'coq10', 'grapeseed', 'glucosamine', 'tmg', 'chondroitin', 'appetite', 'mealbar', 'metabolism', 'balancewithin'].includes(it.key)) w.push('Check with your midwife or GP first, because you are pregnant or breastfeeding.');
     if (it.key === 'ironfolic') w.push('Only take iron if a blood test shows you need it.');
+    if (it.key === 'appetite') w.push('Take each sachet with a full 250 ml glass of water. Not suitable if you have difficulty swallowing.');
+    if (it.key === 'appetite' && a.prescription === 'Yes') w.push('Take your medicines at a different time of day from Appetite Controller, and check with your pharmacist.');
+    if (['appetite', 'mealbar'].includes(it.key) && a.conditions.includes('diabetes')) w.push('Talk to your diabetes team first. Replacing meals or adding glucomannan can change your blood sugar.');
+    if (['appetite', 'mealbar'].includes(it.key) && parseFloat(a.bmi) < 18.5) w.push("Your BMI is under 18.5. Please don't try to lose weight without talking to your GP.");
     if (it.key === 'protein' && guideKeys.includes('malabsorption')) w.push('Contains wheat. Avoid it with coeliac disease.');
     if (hasKidney) w.push('Kidney disease: only with your kidney team\'s agreement.');
     return w;
@@ -788,6 +878,7 @@ function renderResults(a) {
   if (allergic('Fish')) safety.push('Nutrilite Omega-3 contains fish oil. Avoid it.');
   if (allergic('Shellfish')) safety.push('Nutrilite Glucosamine is made from shellfish. Avoid it.');
   if (allergic('Soy') || allergic('Wheat or gluten')) safety.push('Nutrilite All Plant Protein contains soy and wheat. Avoid it.');
+  if (allergic('Milk')) safety.push('Balance Within and the Bodykey meal replacement bars contain milk. Avoid them.');
 
   const firstName = esc(currentUser.name.split(' ')[0]);
   const toWatch = NUTRIENTS.filter(n => a.levels[n.key] !== 'A');
