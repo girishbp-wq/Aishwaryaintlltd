@@ -1,15 +1,19 @@
 /**
- * Aishwarya International - Health Assessment backend
+ * Aishwarya International - Health Assessment backend (v3)
+ *
+ * Create this while signed in as bpg2504@gmail.com, so that account owns the sheet and the data.
  *
  * What this does:
- *  - Receives registrations, logins, assessments and consultation requests
- *    from health-assessment.html (via doPost) and saves them to your Google Sheet.
+ *  - Receives registrations, logins, assessments, consultation requests and
+ *    delete-my-data requests from health-assessment.html (doPost) and stores them in the sheet.
+ *  - Records consent choices with a timestamp and the privacy notice version.
  *  - Sends a daily digest email covering the last 24 hours.
+ *  - Deletes everything about a person after RETENTION_DAYS without activity.
  *
- * Setup (one time):
- *  1. Paste your Sheet ID into SHEET_ID below, then save.
+ * One-time setup:
+ *  1. Paste the Sheet ID into SHEET_ID below and save (Ctrl+S).
  *  2. Run setupSheets, then setupDailyEmailTrigger, then testDailyEmail.
- *  3. Deploy > New deployment > Web app (Execute as: Me, Who has access: Anyone).
+ *  3. Deploy > New deployment > Web app. Execute as: Me. Who has access: Anyone.
  *  4. Send the Web app URL (ends in /exec) so it can go into health-assessment.html.
  *
  * If you edit this code later: Deploy > Manage deployments > pencil icon >
@@ -17,24 +21,29 @@
  */
 
 // ---- Configuration ----
-const SHEET_ID = 'PASTE_YOUR_SHEET_ID_HERE'; // only the part between /d/ and /edit in the sheet URL
-const ADMIN_EMAIL = 'bpg2504@gmail.com';     // who receives the daily digest
+const SHEET_ID = 'PASTE_YOUR_SHEET_ID_HERE';    // only the part between /d/ and /edit in the sheet URL
+const ADMIN_EMAIL = 'aishwaryaintl@outlook.com'; // who receives the daily digest
 const TIMEZONE = 'Europe/London';
-const DIGEST_HOUR = 8;                        // 8 AM UK time
+const DIGEST_HOUR = 8;                            // 8 AM UK time
+const RETENTION_DAYS = 730;                       // 24 months without activity, then deleted (matches privacy notice)
 
 const SHEETS = {
   registrations: 'Registrations',
   assessments: 'Assessments',
   consultations: 'Consultations',
-  dailyLog: 'Daily Log'
+  dailyLog: 'Daily Log',
+  deletionLog: 'Deletion Log'
 };
 
 const HEADERS = {
-  'Registrations': ['Timestamp', 'Name', 'Email', 'Phone', 'Password Hash', 'Consent Given'],
+  'Registrations': ['Timestamp', 'Name', 'Email', 'Phone', 'Password Hash', 'Aged 18+',
+                    'Health Data Consent', 'Contact Consent', 'Privacy Notice Version'],
   'Assessments': ['Timestamp', 'Email', 'Name', 'Age', 'Gender', 'Height (cm)', 'Weight (kg)', 'BMI',
-                  'BMI Category', 'Exercise', 'Diet', 'Sleep', 'Stress', 'Health Concerns'],
+                  'BMI Category', 'Exercise', 'Diet', 'Sleep', 'Stress', 'Smoker', 'Prescription Medicine',
+                  'Blood Thinner', 'Pregnant/Breastfeeding', 'Fish/Shellfish Allergy', 'Health Areas'],
   'Consultations': ['Timestamp', 'Email', 'Name', 'Phone', 'Wants Consultation', 'Follow-up Status', 'Notes'],
-  'Daily Log': ['Date', 'Registrations', 'Assessments', 'Consultation Requests', 'Sent At']
+  'Daily Log': ['Date', 'Registrations', 'Assessments', 'Consultation Requests', 'Records Purged', 'Sent At'],
+  'Deletion Log': ['Timestamp', 'Reason', 'Rows Deleted']
 };
 
 // ---- One-time setup ----
@@ -43,6 +52,15 @@ function setupSheets() {
   const ss = SpreadsheetApp.openById(SHEET_ID);
   Object.keys(HEADERS).forEach(function (name) {
     let sheet = ss.getSheetByName(name);
+    // Reusing a sheet from the earlier version: move the old tab aside so columns don't get mixed up
+    if (sheet && sheet.getLastRow() > 0) {
+      const current = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0].join('|');
+      if (current !== HEADERS[name].join('|')) {
+        sheet.setName(name + ' (old ' + Utilities.formatDate(new Date(), TIMEZONE, 'yyyy-MM-dd HHmm') + ')');
+        Logger.log('Old "' + name + '" tab renamed. Delete it once you have checked it.');
+        sheet = null;
+      }
+    }
     if (!sheet) sheet = ss.insertSheet(name);
     if (sheet.getLastRow() === 0) {
       sheet.appendRow(HEADERS[name]);
@@ -50,6 +68,8 @@ function setupSheets() {
       sheet.setFrozenRows(1);
     }
   });
+  const blank = ss.getSheetByName('Sheet1');
+  if (blank && blank.getLastRow() === 0 && ss.getSheets().length > 1) ss.deleteSheet(blank);
   Logger.log('Sheets setup complete: ' + ss.getUrl());
 }
 
@@ -91,6 +111,7 @@ function doPost(e) {
       case 'login': return json_(login_(data));
       case 'assessment': return json_(saveAssessment_(data));
       case 'consultation': return json_(saveConsultation_(data));
+      case 'deleteAccount': return json_(deleteAccount_(data));
       default: return json_({ ok: false, error: 'Unknown action' });
     }
   } catch (err) {
@@ -103,11 +124,15 @@ function doPost(e) {
 function register_(d) {
   const email = normaliseEmail_(d.email);
   if (!email || !d.name || !d.passwordHash) return { ok: false, error: 'Missing name, email or password.' };
+  if (!d.ageConfirmed || !d.healthConsent) {
+    return { ok: false, error: 'We need your confirmation that you are 18+ and your consent to store your health answers.' };
+  }
   if (findRegistration_(email)) {
     return { ok: false, error: 'An account with this email already exists. Please log in instead.' };
   }
   sheet_(SHEETS.registrations).appendRow([
-    new Date(), safe_(d.name), email, safe_(d.phone), d.passwordHash, d.consent ? 'Yes' : 'No'
+    new Date(), safe_(d.name), email, safe_(d.phone), d.passwordHash, 'Yes',
+    'Yes', d.contactConsent ? 'Yes' : 'No', safe_(d.privacyVersion)
   ]);
   return { ok: true, name: d.name, phone: d.phone || '' };
 }
@@ -124,7 +149,8 @@ function saveAssessment_(d) {
   sheet_(SHEETS.assessments).appendRow([
     new Date(), email, safe_(d.name), d.age, safe_(d.gender), d.height, d.weight, d.bmi,
     safe_(d.bmiCategory), safe_(d.exercise), safe_(d.diet), safe_(d.sleep), safe_(d.stress),
-    safe_(d.conditions)
+    safe_(d.smoker), safe_(d.prescription), safe_(d.bloodThinner), safe_(d.pregnant), safe_(d.allergy),
+    safe_(d.healthAreas)
   ]);
   return { ok: true };
 }
@@ -139,23 +165,35 @@ function saveConsultation_(d) {
   return { ok: true };
 }
 
-// ---- Daily digest ----
+function deleteAccount_(d) {
+  const email = normaliseEmail_(d.email);
+  const row = findRegistration_(email);
+  if (!row || row[4] !== d.passwordHash) return { ok: false, error: 'Email or password is incorrect.' };
+  const removed = deleteRowsForEmails_([email]);
+  sheet_(SHEETS.deletionLog).appendRow([new Date(), 'Deleted at user request', removed]);
+  return { ok: true };
+}
+
+// ---- Daily digest and retention ----
 
 function sendDailyDigestEmail() {
+  const purged = purgeOldRecords_();
+
   const since = new Date(Date.now() - 24 * 60 * 60 * 1000);
   const regs = rowsSince_(SHEETS.registrations, since);
   const assessments = rowsSince_(SHEETS.assessments, since);
   const consults = rowsSince_(SHEETS.consultations, since).filter(function (r) { return r[4] === 'Yes'; });
 
+  const today = Utilities.formatDate(new Date(), TIMEZONE, 'dd MMM yyyy');
   if (!regs.length && !assessments.length && !consults.length) {
-    Logger.log('Nothing new in the last 24 hours. No email sent.');
+    Logger.log('Nothing new in the last 24 hours. No email sent. Purged rows: ' + purged);
     return;
   }
 
-  const today = Utilities.formatDate(new Date(), TIMEZONE, 'dd MMM yyyy');
   let html = '<h2>Health Assessment digest - ' + today + '</h2>' +
     '<p>Last 24 hours: <b>' + regs.length + '</b> registrations, <b>' + assessments.length +
-    '</b> assessments, <b>' + consults.length + '</b> consultation requests.</p>';
+    '</b> assessments, <b>' + consults.length + '</b> consultation requests.</p>' +
+    '<p style="color:#a00">Contains health information. Do not forward.</p>';
 
   if (consults.length) {
     html += '<h3>Call these people first (asked for a consultation)</h3>' +
@@ -163,17 +201,61 @@ function sendDailyDigestEmail() {
   }
   if (assessments.length) {
     html += '<h3>Assessments completed</h3>' +
-      table_(['Name', 'Email', 'Age', 'BMI', 'Health concerns'],
-        assessments.map(function (r) { return [r[2], r[1], r[3], r[7] + ' (' + r[8] + ')', r[13]]; }));
+      table_(['Name', 'Email', 'Age', 'BMI', 'Health areas', 'Safety flags'],
+        assessments.map(function (r) {
+          const flags = [];
+          if (r[14] === 'Yes') flags.push('prescription medicine');
+          if (r[15] === 'Yes' || r[15] === 'Not sure') flags.push('blood thinner: ' + r[15]);
+          if (r[16] === 'Yes') flags.push('pregnant/breastfeeding');
+          if (r[17] && r[17] !== 'None') flags.push('allergy: ' + r[17]);
+          if (r[13] === 'Yes') flags.push('smoker');
+          return [r[2], r[1], r[3], r[7] + ' (' + r[8] + ')', r[18], flags.join('; ') || 'none'];
+        }));
   }
   if (regs.length) {
     html += '<h3>New registrations</h3>' +
-      table_(['Name', 'Email', 'Phone'], regs.map(function (r) { return [r[1], r[2], r[3]]; }));
+      table_(['Name', 'Email', 'Phone', 'OK to contact?'], regs.map(function (r) { return [r[1], r[2], r[3], r[7]]; }));
   }
   html += '<p><a href="https://docs.google.com/spreadsheets/d/' + SHEET_ID + '">Open the full sheet</a></p>';
 
   MailApp.sendEmail({ to: ADMIN_EMAIL, subject: 'Health Assessment digest - ' + today, htmlBody: html });
-  sheet_(SHEETS.dailyLog).appendRow([today, regs.length, assessments.length, consults.length, new Date()]);
+  sheet_(SHEETS.dailyLog).appendRow([today, regs.length, assessments.length, consults.length, purged, new Date()]);
+}
+
+function purgeOldRecords_() {
+  const cutoff = new Date(Date.now() - RETENTION_DAYS * 24 * 60 * 60 * 1000);
+  const lastActivity = {};
+  [SHEETS.registrations, SHEETS.assessments, SHEETS.consultations].forEach(function (name) {
+    const emailCol = name === SHEETS.registrations ? 2 : 1;
+    sheet_(name).getDataRange().getValues().slice(1).forEach(function (r) {
+      const email = String(r[emailCol]).toLowerCase();
+      if (!(r[0] instanceof Date)) return;
+      if (!lastActivity[email] || r[0] > lastActivity[email]) lastActivity[email] = r[0];
+    });
+  });
+  const stale = Object.keys(lastActivity).filter(function (e) { return lastActivity[e] < cutoff; });
+  if (!stale.length) return 0;
+  const removed = deleteRowsForEmails_(stale);
+  sheet_(SHEETS.deletionLog).appendRow([new Date(), 'Retention period ended (' + stale.length + ' people)', removed]);
+  return removed;
+}
+
+function deleteRowsForEmails_(emails) {
+  const set = {};
+  emails.forEach(function (e) { set[e] = true; });
+  let removed = 0;
+  [SHEETS.registrations, SHEETS.assessments, SHEETS.consultations].forEach(function (name) {
+    const sheet = sheet_(name);
+    const emailCol = name === SHEETS.registrations ? 2 : 1;
+    const values = sheet.getDataRange().getValues();
+    for (let i = values.length - 1; i >= 1; i--) {
+      if (set[String(values[i][emailCol]).toLowerCase()]) {
+        sheet.deleteRow(i + 1);
+        removed++;
+      }
+    }
+  });
+  return removed;
 }
 
 // ---- Helpers ----
@@ -214,7 +296,7 @@ function escape_(value) {
 }
 
 function table_(headers, rows) {
-  const cell = 'style="border:1px solid #ccc;padding:6px;text-align:left"';
+  const cell = 'style="border:1px solid #ccc;padding:6px;text-align:left;vertical-align:top"';
   return '<table style="border-collapse:collapse">' +
     '<tr>' + headers.map(function (h) { return '<th ' + cell + '>' + escape_(h) + '</th>'; }).join('') + '</tr>' +
     rows.map(function (r) {

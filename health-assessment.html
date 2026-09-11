@@ -1,1518 +1,637 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-GB">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aishwarya International - Health Assessment Platform</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: #333;
-            padding: 20px;
-            min-height: 100vh;
-        }
-
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-            overflow: hidden;
-        }
-
-        .header {
-            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
-            color: white;
-            padding: 40px 30px;
-            text-align: center;
-        }
-
-        .header h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
-        }
-
-        .header p {
-            font-size: 1.1em;
-            opacity: 0.9;
-        }
-
-        .content {
-            padding: 40px;
-        }
-
-        .section {
-            margin-bottom: 40px;
-        }
-
-        .section-title {
-            font-size: 1.5em;
-            color: #2c3e50;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 3px solid #667eea;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #34495e;
-        }
-
-        input[type="text"],
-        input[type="email"],
-        input[type="password"],
-        input[type="number"],
-        select,
-        textarea {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #ddd;
-            border-radius: 6px;
-            font-size: 1em;
-            transition: border-color 0.3s;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        input:focus, select:focus, textarea:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-
-        .checkbox-group {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-top: 15px;
-        }
-
-        .checkbox-item {
-            display: flex;
-            align-items: center;
-        }
-
-        .checkbox-item input[type="checkbox"] {
-            width: 20px;
-            height: 20px;
-            margin-right: 10px;
-            cursor: pointer;
-        }
-
-        .checkbox-item label {
-            margin: 0;
-            font-weight: 500;
-            cursor: pointer;
-        }
-
-        .button-group {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            margin-top: 30px;
-        }
-
-        button {
-            padding: 14px 40px;
-            font-size: 1.1em;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
-        }
-
-        .btn-secondary {
-            background: #95a5a6;
-            color: white;
-        }
-
-        .btn-secondary:hover {
-            background: #7f8c8d;
-        }
-
-        .btn-link {
-            background: none;
-            color: #667eea;
-            text-decoration: underline;
-            padding: 0;
-            font-size: 0.9em;
-        }
-
-        .btn-link:hover {
-            color: #764ba2;
-        }
-
-        /* Page sections */
-        .page {
-            display: none;
-        }
-
-        .page.active {
-            display: block;
-        }
-
-        /* Registration page */
-        .login-toggle {
-            text-align: center;
-            margin-top: 20px;
-            color: #666;
-        }
-
-        .login-toggle .btn-link {
-            margin-left: 5px;
-        }
-
-        /* Results */
-        .health-profile {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 30px;
-            border-left: 5px solid #667eea;
-        }
-
-        .health-profile h3 {
-            margin-bottom: 15px;
-            color: #2c3e50;
-        }
-
-        .profile-item {
-            display: inline-block;
-            margin-right: 30px;
-            margin-bottom: 10px;
-        }
-
-        .profile-item strong {
-            color: #667eea;
-        }
-
-        .risk-badge {
-            display: inline-block;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 0.9em;
-            margin-top: 10px;
-        }
-
-        .risk-healthy {
-            background: #d4edda;
-            color: #155724;
-        }
-
-        .risk-warning {
-            background: #fff3cd;
-            color: #856404;
-        }
-
-        .risk-danger {
-            background: #f8d7da;
-            color: #721c24;
-        }
-
-        .condition-card {
-            background: white;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            padding: 25px;
-            margin-bottom: 20px;
-            transition: all 0.3s;
-        }
-
-        .condition-card:hover {
-            border-color: #667eea;
-            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.15);
-        }
-
-        .condition-name {
-            font-size: 1.3em;
-            font-weight: 700;
-            color: #2c3e50;
-            margin-bottom: 15px;
-        }
-
-        .product-tier {
-            margin-bottom: 20px;
-        }
-
-        .tier-title {
-            font-weight: 700;
-            color: #34495e;
-            margin-bottom: 10px;
-            font-size: 1.05em;
-        }
-
-        .product-list {
-            list-style: none;
-            margin-left: 20px;
-        }
-
-        .product-list li {
-            padding: 8px 0;
-            border-bottom: 1px solid #ecf0f1;
-            color: #555;
-        }
-
-        .product-list li:last-child {
-            border-bottom: none;
-        }
-
-        .lifestyle-section {
-            background: #e8f4f8;
-            padding: 20px;
-            border-radius: 8px;
-            border-left: 5px solid #3498db;
-            margin-top: 15px;
-        }
-
-        .lifestyle-section h4 {
-            color: #2c3e50;
-            margin-bottom: 10px;
-        }
-
-        .lifestyle-item {
-            margin: 8px 0;
-            padding-left: 20px;
-            position: relative;
-            color: #555;
-        }
-
-        .lifestyle-item::before {
-            content: "→ ";
-            position: absolute;
-            left: 0;
-            color: #3498db;
-            font-weight: bold;
-        }
-
-        .eating-habits {
-            background: #fef5e7;
-            padding: 20px;
-            border-radius: 8px;
-            border-left: 5px solid #f39c12;
-            margin-top: 15px;
-        }
-
-        .eating-habits h4 {
-            color: #2c3e50;
-            margin-bottom: 10px;
-        }
-
-        .eating-habits p {
-            margin: 8px 0;
-            color: #555;
-            padding-left: 15px;
-        }
-
-        .opt-in-section {
-            background: #f0f8ff;
-            padding: 25px;
-            border-radius: 8px;
-            border: 2px solid #3498db;
-            margin: 30px 0;
-        }
-
-        .opt-in-section h3 {
-            color: #2c3e50;
-            margin-bottom: 15px;
-        }
-
-        .checkbox-item.consent {
-            display: block;
-            margin: 15px 0;
-        }
-
-        .checkbox-item.consent input[type="checkbox"] {
-            width: 20px;
-            height: 20px;
-            margin-right: 10px;
-        }
-
-        .checkbox-item.consent label {
-            display: inline;
-            font-weight: normal;
-            margin: 0;
-        }
-
-        .error-message {
-            background: #f8d7da;
-            color: #721c24;
-            padding: 15px;
-            border-radius: 6px;
-            margin-bottom: 20px;
-            display: none;
-        }
-
-        .error-message.active {
-            display: block;
-        }
-
-        .success-message {
-            background: #d4edda;
-            color: #155724;
-            padding: 15px;
-            border-radius: 6px;
-            margin-bottom: 20px;
-            display: none;
-        }
-
-        .success-message.active {
-            display: block;
-        }
-
-        .info-message {
-            background: #d1ecf1;
-            color: #0c5460;
-            padding: 15px;
-            border-radius: 6px;
-            margin-bottom: 20px;
-        }
-
-        /* Logout button */
-        .user-info {
-            text-align: right;
-            padding: 10px 0;
-            color: #666;
-            font-size: 0.9em;
-        }
-
-        .user-info .btn-link {
-            margin-left: 10px;
-        }
-
-        @media (max-width: 768px) {
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-
-            .checkbox-group {
-                grid-template-columns: 1fr;
-            }
-
-            .header h1 {
-                font-size: 1.8em;
-            }
-
-            .button-group {
-                flex-direction: column;
-            }
-
-            button {
-                width: 100%;
-            }
-
-            .profile-item {
-                margin-right: 15px;
-                display: block;
-                margin-bottom: 8px;
-            }
-        }
-
-        @media print {
-            body {
-                background: white;
-                padding: 0;
-            }
-
-            .container {
-                box-shadow: none;
-            }
-
-            button {
-                display: none;
-            }
-
-            .condition-card {
-                page-break-inside: avoid;
-            }
-
-            .user-info {
-                display: none;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Health &amp; Nutrition Check | Aishwarya International</title>
+<meta name="description" content="A free health and nutrition check based on Dr Ray Strand's book on nutritional medicine, from Aishwarya International.">
+<style>
+  :root {
+    --ink: #1f2a37; --muted: #5b6776; --line: #dfe4ea; --bg: #f3f6f4; --card: #ffffff;
+    --brand: #1f5f4a; --brand-dark: #16453a; --accent: #c98a1b;
+    --warn-bg: #fff6e5; --warn-line: #e5b04a; --stop-bg: #fdecec; --stop-line: #d9534f;
+    --info-bg: #eaf3ef;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif; color: var(--ink); background: var(--bg); line-height: 1.5; font-size: 16px; }
+  a { color: var(--brand); }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 0 16px; }
+  header.top { background: var(--brand); color: #fff; padding: 28px 0 22px; }
+  header.top h1 { margin: 0; font-size: 1.9em; }
+  header.top p { margin: 6px 0 0; opacity: .9; }
+  .disclaimer-strip { background: var(--brand-dark); color: #e8f1ee; font-size: .88em; padding: 8px 0; }
+  main { padding: 24px 0 40px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 24px; margin-bottom: 20px; }
+  h2 { margin: 0 0 12px; font-size: 1.35em; color: var(--brand-dark); }
+  h3 { margin: 18px 0 8px; font-size: 1.1em; }
+  .muted { color: var(--muted); }
+  .small { font-size: .88em; }
+  label { display: block; font-weight: 600; margin-bottom: 6px; }
+  input[type=text], input[type=email], input[type=password], input[type=number], input[type=tel], select {
+    width: 100%; padding: 11px; border: 1px solid #c5ccd4; border-radius: 6px; font-size: 1em; font-family: inherit; background: #fff;
+  }
+  input:focus, select:focus { outline: 2px solid var(--brand); border-color: var(--brand); }
+  .field { margin-bottom: 16px; }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .check { display: flex; gap: 10px; align-items: flex-start; margin: 10px 0; font-weight: 400; }
+  .check input { width: 20px; height: 20px; margin-top: 2px; flex: 0 0 auto; }
+  .check span { font-weight: 400; }
+  fieldset { border: 1px solid var(--line); border-radius: 8px; padding: 12px 16px; margin: 0 0 14px; }
+  legend { font-weight: 700; padding: 0 6px; color: var(--brand-dark); }
+  .areas { display: grid; grid-template-columns: 1fr 1fr; gap: 0 16px; }
+  .btn { display: inline-block; border: 0; border-radius: 6px; padding: 12px 22px; font-size: 1em; font-weight: 600; cursor: pointer; font-family: inherit; }
+  .btn-primary { background: var(--brand); color: #fff; }
+  .btn-primary:hover { background: var(--brand-dark); }
+  .btn-secondary { background: #e7ebef; color: var(--ink); }
+  .btn-link { background: none; border: 0; color: var(--brand); text-decoration: underline; cursor: pointer; padding: 0; font: inherit; }
+  .btn:disabled { opacity: .6; cursor: wait; }
+  .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+  .page { display: none; }
+  .page.active { display: block; }
+  .error { display: none; background: var(--stop-bg); border-left: 4px solid var(--stop-line); padding: 12px; border-radius: 6px; margin-bottom: 14px; }
+  .error.active { display: block; }
+  .box { border-radius: 8px; padding: 14px 16px; margin: 14px 0; }
+  .box-info { background: var(--info-bg); border-left: 4px solid var(--brand); }
+  .box-warn { background: var(--warn-bg); border-left: 4px solid var(--warn-line); }
+  .box-stop { background: var(--stop-bg); border-left: 4px solid var(--stop-line); }
+  .box ul { margin: 6px 0 0; padding-left: 20px; }
+  .userbar { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; font-size: .92em; }
+  .stats { display: flex; flex-wrap: wrap; gap: 10px; margin: 6px 0 10px; }
+  .stat { background: #f6f8fa; border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; }
+  .stat b { display: block; font-size: 1.15em; }
+  .tier { margin: 18px 0; }
+  .tier-head { display: flex; align-items: center; gap: 8px; font-weight: 700; margin-bottom: 8px; }
+  .pill { font-size: .75em; font-weight: 700; padding: 3px 8px; border-radius: 20px; text-transform: uppercase; letter-spacing: .03em; }
+  .pill-start { background: #d9efe6; color: var(--brand-dark); }
+  .pill-add { background: #fbecc9; color: #7a5307; }
+  .pill-nice { background: #e6ebf1; color: #3d4b5c; }
+  .item { border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; margin-bottom: 8px; background: #fff; }
+  .item-top { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+  .item-name { font-weight: 700; }
+  .src { font-size: .78em; font-weight: 700; padding: 2px 8px; border-radius: 4px; white-space: nowrap; align-self: flex-start; }
+  .src-nutrilite { background: var(--brand); color: #fff; }
+  .src-elsewhere { background: #eef0f3; color: #3d4b5c; }
+  .item .why { color: var(--muted); font-size: .92em; margin-top: 2px; }
+  .item .warn { color: #8a3b00; font-size: .9em; margin-top: 6px; font-weight: 600; }
+  .area-card { border-top: 1px solid var(--line); padding-top: 14px; margin-top: 14px; }
+  .area-card:first-of-type { border-top: 0; margin-top: 0; padding-top: 0; }
+  .area-card ul { margin: 6px 0; padding-left: 20px; }
+  .book { font-style: italic; color: #3d4b5c; }
+  footer { font-size: .85em; color: var(--muted); padding: 20px 0 40px; border-top: 1px solid var(--line); }
+  @media (max-width: 680px) {
+    .row, .areas { grid-template-columns: 1fr; }
+    header.top h1 { font-size: 1.5em; }
+    .card { padding: 18px; }
+  }
+  @media print {
+    header.top, .disclaimer-strip, .no-print, .userbar, footer .no-print { display: none !important; }
+    body { background: #fff; }
+    .card { border: 0; padding: 0; }
+    .item, .area-card { page-break-inside: avoid; }
+  }
+</style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>🌿 Aishwarya International</h1>
-            <p>Nutritional Health Assessment Platform</p>
+<header class="top">
+  <div class="wrap">
+    <h1>Health &amp; Nutrition Check</h1>
+    <p>From Aishwarya International. Based on Dr Ray Strand's book on nutritional medicine.</p>
+  </div>
+</header>
+<div class="disclaimer-strip">
+  <div class="wrap">For education only. Not medical advice. Keep taking any medicine you've been prescribed.</div>
+</div>
+
+<main class="wrap">
+
+  <!-- Registration -->
+  <section id="registrationPage" class="page active">
+    <div class="card">
+      <h2>Create your free account</h2>
+      <p class="muted">Takes about 5 minutes. You'll see your results straight away.</p>
+      <div id="regError" class="error" role="alert"></div>
+      <form id="registrationForm" novalidate>
+        <div class="field"><label for="regName">Full name</label><input type="text" id="regName" autocomplete="name" required></div>
+        <div class="row">
+          <div class="field"><label for="regEmail">Email</label><input type="email" id="regEmail" autocomplete="email" required></div>
+          <div class="field"><label for="regPhone">Phone or WhatsApp (optional)</label><input type="tel" id="regPhone" autocomplete="tel"></div>
+        </div>
+        <div class="row">
+          <div class="field"><label for="regPassword">Password (8+ characters)</label><input type="password" id="regPassword" autocomplete="new-password" required></div>
+          <div class="field"><label for="regConfirm">Confirm password</label><input type="password" id="regConfirm" autocomplete="new-password" required></div>
         </div>
 
-        <div class="content">
-            <!-- Registration Page -->
-            <div id="registrationPage" class="page active">
-                <div class="section">
-                    <h2 class="section-title">Create Your Account</h2>
-                    <p style="color: #666; margin-bottom: 20px;">Register to access your personalized health assessment and receive professional nutritional recommendations.</p>
-
-                    <div id="regError" class="error-message"></div>
-
-                    <form id="registrationForm">
-                        <div class="form-group">
-                            <label for="regName">Full Name *</label>
-                            <input type="text" id="regName" required placeholder="Enter your full name">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="regEmail">Email Address *</label>
-                            <input type="email" id="regEmail" required placeholder="your.email@example.com">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="regPassword">Password *</label>
-                            <input type="password" id="regPassword" required placeholder="Create a secure password (min 6 characters)">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="regConfirmPassword">Confirm Password *</label>
-                            <input type="password" id="regConfirmPassword" required placeholder="Confirm your password">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="regPhone">Phone Number (Optional)</label>
-                            <input type="text" id="regPhone" placeholder="Your phone number">
-                        </div>
-
-                        <div class="form-group">
-                            <div class="checkbox-item consent">
-                                <input type="checkbox" id="regConsent" required>
-                                <label for="regConsent">I agree to share my assessment results for professional follow-up consultation</label>
-                            </div>
-                        </div>
-
-                        <div class="button-group">
-                            <button type="submit" class="btn-primary">Create Account</button>
-                        </div>
-
-                        <div class="login-toggle">
-                            Already have an account? <button type="button" class="btn-link" onclick="switchToLogin()">Login here</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-
-            <!-- Login Page -->
-            <div id="loginPage" class="page">
-                <div class="section">
-                    <h2 class="section-title">Login to Your Account</h2>
-                    <p style="color: #666; margin-bottom: 20px;">Sign in to access your health assessment.</p>
-
-                    <div id="loginError" class="error-message"></div>
-
-                    <form id="loginForm">
-                        <div class="form-group">
-                            <label for="loginEmail">Email Address *</label>
-                            <input type="email" id="loginEmail" required placeholder="your.email@example.com">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="loginPassword">Password *</label>
-                            <input type="password" id="loginPassword" required placeholder="Enter your password">
-                        </div>
-
-                        <div class="button-group">
-                            <button type="submit" class="btn-primary">Login</button>
-                        </div>
-
-                        <div class="login-toggle">
-                            Don't have an account? <button type="button" class="btn-link" onclick="switchToRegister()">Register here</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-
-            <!-- Assessment Page -->
-            <div id="assessmentPage" class="page">
-                <div class="user-info" id="userInfo"></div>
-
-                <div class="section">
-                    <h2 class="section-title">Personal Information</h2>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="age">Age (years) *</label>
-                            <input type="number" id="age" required min="18" max="120" placeholder="Enter your age">
-                        </div>
-                        <div class="form-group">
-                            <label for="gender">Gender *</label>
-                            <select id="gender" required>
-                                <option value="">Select gender</option>
-                                <option value="male">Male</option>
-                                <option value="female">Female</option>
-                                <option value="other">Other</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="height">Height (cm) *</label>
-                            <input type="number" id="height" required min="100" max="250" placeholder="e.g., 175">
-                        </div>
-                        <div class="form-group">
-                            <label for="weight">Weight (kg) *</label>
-                            <input type="number" id="weight" required min="30" max="300" step="0.1" placeholder="e.g., 75.5">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="section">
-                    <h2 class="section-title">Health Conditions & Concerns</h2>
-                    <p style="color: #666; margin-bottom: 20px;">Check all that apply to you or that you'd like to prevent:</p>
-
-                    <div class="checkbox-group">
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="heart_disease" name="conditions" value="heart_disease">
-                            <label for="heart_disease">Heart Disease & Cardiovascular</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="diabetes" name="conditions" value="diabetes">
-                            <label for="diabetes">Diabetes</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="arthritis" name="conditions" value="arthritis">
-                            <label for="arthritis">Arthritis & Osteoporosis</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="cancer_prevention" name="conditions" value="cancer_prevention">
-                            <label for="cancer_prevention">Cancer Prevention</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="alzheimers" name="conditions" value="alzheimers">
-                            <label for="alzheimers">Alzheimer's & Dementia</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="parkinsons" name="conditions" value="parkinsons">
-                            <label for="parkinsons">Parkinson's Disease</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="ms" name="conditions" value="ms">
-                            <label for="ms">Multiple Sclerosis</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="autoimmune" name="conditions" value="autoimmune">
-                            <label for="autoimmune">Autoimmune Diseases</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="fibromyalgia" name="conditions" value="fibromyalgia">
-                            <label for="fibromyalgia">Chronic Fatigue & Fibromyalgia</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="lung_disease" name="conditions" value="lung_disease">
-                            <label for="lung_disease">Lung Disease & Asthma</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="eye_health" name="conditions" value="eye_health">
-                            <label for="eye_health">Eye Health</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="high_cholesterol" name="conditions" value="high_cholesterol">
-                            <label for="high_cholesterol">High Cholesterol</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="high_bp" name="conditions" value="high_bp">
-                            <label for="high_bp">High Blood Pressure</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="allergies" name="conditions" value="allergies">
-                            <label for="allergies">Allergies & Sinusitis</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="wellness" name="conditions" value="wellness">
-                            <label for="wellness">General Wellness & Prevention</label>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="section">
-                    <h2 class="section-title">Lifestyle Assessment</h2>
-
-                    <div class="form-group">
-                        <label for="exercise">Current Exercise Level *</label>
-                        <select id="exercise" required>
-                            <option value="">Select your exercise level</option>
-                            <option value="sedentary">Sedentary (Little or no exercise)</option>
-                            <option value="light">Light (1-3 days per week)</option>
-                            <option value="moderate">Moderate (3-5 days per week)</option>
-                            <option value="active">Active (5+ days per week)</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="diet">Diet Quality *</label>
-                        <select id="diet" required>
-                            <option value="">Select your diet quality</option>
-                            <option value="poor">Poor (High processed foods)</option>
-                            <option value="fair">Fair (Some healthy foods)</option>
-                            <option value="good">Good (Mostly whole foods)</option>
-                            <option value="excellent">Excellent (Balanced, nutrient-rich)</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="sleep">Sleep Quality *</label>
-                        <select id="sleep" required>
-                            <option value="">Select your sleep quality</option>
-                            <option value="poor">Poor (Less than 6 hours)</option>
-                            <option value="fair">Fair (6-7 hours)</option>
-                            <option value="good">Good (7-8 hours)</option>
-                            <option value="excellent">Excellent (8+ hours)</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="stress">Stress Level *</label>
-                        <select id="stress" required>
-                            <option value="">Select your stress level</option>
-                            <option value="high">High (Constant stress)</option>
-                            <option value="moderate">Moderate (Regular stress)</option>
-                            <option value="low">Low (Minimal stress)</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="button-group">
-                    <button type="button" class="btn-primary" onclick="submitAssessment()">Get My Recommendations</button>
-                    <button type="button" class="btn-secondary" onclick="logout()">Logout</button>
-                </div>
-            </div>
-
-            <!-- Results Page -->
-            <div id="resultsPage" class="page">
-                <div class="user-info" id="userInfo2"></div>
-
-                <div style="margin-bottom: 30px;">
-                    <button onclick="window.print()" class="btn-primary">Print / Save as PDF</button>
-                    <button onclick="backToAssessment()" class="btn-secondary">Edit Assessment</button>
-                    <button onclick="logout()" class="btn-secondary">Logout</button>
-                </div>
-
-                <div id="profileResults"></div>
-                <div id="recommendationsResults"></div>
-
-                <div class="opt-in-section">
-                    <h3>📞 Get Expert Consultation</h3>
-                    <p style="color: #666; margin-bottom: 15px;">Would you like our wellness experts to contact you for a personalized consultation about your supplement plan and health goals?</p>
-
-                    <div class="checkbox-item consent">
-                        <input type="checkbox" id="consultationOptIn" checked>
-                        <label for="consultationOptIn">Yes, I would like the Aishwarya team to contact me for consultation</label>
-                    </div>
-
-                    <button type="button" class="btn-primary" onclick="submitConsultationPreference()" style="margin-top: 20px;">Complete Assessment</button>
-                </div>
-            </div>
+        <div class="box box-info small">
+          This check is for education. It is not medical advice, and it doesn't diagnose, treat or prevent any condition.
+          Read the <a href="privacy.html" target="_blank" rel="noopener">Privacy Notice</a> to see what we store and your rights.
         </div>
+
+        <label class="check"><input type="checkbox" id="consentAge"><span><b>Required:</b> I am 18 or over.</span></label>
+        <label class="check"><input type="checkbox" id="consentHealth"><span><b>Required:</b> I have read the <a href="privacy.html" target="_blank" rel="noopener">Privacy Notice</a>. I give my explicit consent for Aishwarya Intl Ltd to store and use the health information I enter, to create my results and keep a record of them. I can withdraw this consent and delete my data at any time.</span></label>
+        <label class="check"><input type="checkbox" id="consentContact"><span><b>Optional:</b> You may contact me by email, phone or WhatsApp about my results and Nutrilite products. I can ask you to stop at any time.</span></label>
+
+        <div class="actions">
+          <button type="submit" class="btn btn-primary">Create account</button>
+        </div>
+        <p class="small">Already registered? <button type="button" class="btn-link" onclick="showPage('loginPage')">Log in</button></p>
+      </form>
+    </div>
+  </section>
+
+  <!-- Login -->
+  <section id="loginPage" class="page">
+    <div class="card">
+      <h2>Log in</h2>
+      <div id="loginError" class="error" role="alert"></div>
+      <form id="loginForm" novalidate>
+        <div class="field"><label for="loginEmail">Email</label><input type="email" id="loginEmail" autocomplete="email" required></div>
+        <div class="field"><label for="loginPassword">Password</label><input type="password" id="loginPassword" autocomplete="current-password" required></div>
+        <div class="actions"><button type="submit" class="btn btn-primary">Log in</button></div>
+        <p class="small">New here? <button type="button" class="btn-link" onclick="showPage('registrationPage')">Create an account</button></p>
+        <p class="small muted">Forgotten your password? Email <a href="mailto:aishwaryaintl@outlook.com">aishwaryaintl@outlook.com</a> and we'll remove your old account so you can register again.</p>
+      </form>
+    </div>
+  </section>
+
+  <!-- Assessment -->
+  <section id="assessmentPage" class="page">
+    <div class="userbar"><span id="userBar1"></span><span><button class="btn-link" onclick="deleteMyData()">Delete my data</button> &nbsp;|&nbsp; <button class="btn-link" onclick="logout()">Log out</button></span></div>
+    <div id="assessError" class="error" role="alert"></div>
+
+    <div class="card">
+      <h2>1. About you</h2>
+      <div class="row">
+        <div class="field"><label for="age">Age</label><input type="number" id="age" min="18" max="110"></div>
+        <div class="field"><label for="gender">Sex</label>
+          <select id="gender"><option value="">Choose</option><option>Female</option><option>Male</option><option>Prefer not to say</option></select></div>
+      </div>
+      <div class="row">
+        <div class="field"><label for="height">Height (cm)</label><input type="number" id="height" min="120" max="230" placeholder="e.g. 170"></div>
+        <div class="field"><label for="weight">Weight (kg)</label><input type="number" id="weight" min="30" max="300" step="0.1" placeholder="e.g. 72.5"></div>
+      </div>
     </div>
 
-    <script>
-        // Recommendation database (same as before)
-        const recommendations = {
-            heart_disease: {
-                name: "Heart Disease & Cardiovascular Health",
-                mustHave: [
-                    "Antioxidant Complex (Vitamins C, E, Beta-carotene)",
-                    "CoQ10 (for heart muscle energy)",
-                    "Omega-3 Fatty Acids",
-                    "B-Complex Vitamins (for homocysteine reduction)"
-                ],
-                recommended: [
-                    "Magnesium (for heart rhythm)",
-                    "Garlic Extract",
-                    "Hawthorn Berry Extract",
-                    "L-Carnitine"
-                ],
-                optional: [
-                    "Policosanol",
-                    "Red Yeast Rice",
-                    "Grape Seed Extract"
-                ],
-                lifestyle: [
-                    "Perform 30 minutes of moderate aerobic exercise 5+ days per week",
-                    "Reduce sodium intake to less than 2,300mg per day",
-                    "Manage stress through meditation or yoga",
-                    "Maintain a healthy weight (BMI 18.5-24.9)",
-                    "Get 7-8 hours of quality sleep nightly"
-                ],
-                eatingHabits: "Increase intake of fatty fish (salmon, mackerel), leafy greens, berries, nuts, and whole grains. Limit red meat, processed foods, and trans fats. Aim for 7+ servings of fruits and vegetables daily."
-            },
-            diabetes: {
-                name: "Diabetes (Type 1 or 2) Management",
-                mustHave: [
-                    "Chromium (for blood sugar regulation)",
-                    "Antioxidant Complex (for oxidative stress from high blood sugar)",
-                    "Alpha-Lipoic Acid (for insulin sensitivity)",
-                    "B-Complex Vitamins (especially B1 for glucose metabolism)"
-                ],
-                recommended: [
-                    "Cinnamon Extract",
-                    "Bitter Melon",
-                    "Gymnema Sylvestre",
-                    "Vanadium"
-                ],
-                optional: [
-                    "Inositol",
-                    "Zinc",
-                    "Selenium"
-                ],
-                lifestyle: [
-                    "Exercise 30+ minutes daily - combination of aerobic and strength training",
-                    "Monitor blood sugar levels regularly",
-                    "Manage stress effectively",
-                    "Maintain consistent sleep schedule (7-9 hours)",
-                    "Lose weight if overweight (even 5-10% loss improves insulin sensitivity)"
-                ],
-                eatingHabits: "Focus on low glycemic index foods. Include protein with every meal. Choose whole grains over refined carbohydrates. Increase fiber intake (legumes, vegetables, whole grains). Limit sugary drinks and desserts."
-            },
-            arthritis: {
-                name: "Arthritis & Osteoporosis",
-                mustHave: [
-                    "Calcium and Vitamin D (for bone health)",
-                    "Antioxidant Complex (for joint inflammation)",
-                    "Glucosamine & Chondroitin (for cartilage support)",
-                    "Omega-3 Fatty Acids (for inflammation reduction)"
-                ],
-                recommended: [
-                    "Turmeric/Curcumin (potent anti-inflammatory)",
-                    "Boswellia (joint flexibility)",
-                    "Ginger Extract",
-                    "Collagen Type II"
-                ],
-                optional: [
-                    "MSM (Methylsulfonylmethane)",
-                    "SAM-e",
-                    "Hyaluronic Acid"
-                ],
-                lifestyle: [
-                    "Perform low-impact exercise (walking, swimming, cycling) 5 days per week",
-                    "Include strength training 2-3 times per week to maintain bone density",
-                    "Apply heat therapy to affected joints",
-                    "Maintain healthy weight to reduce joint stress",
-                    "Ensure 7-8 hours of sleep for tissue repair"
-                ],
-                eatingHabits: "Include cold-water fish (salmon, sardines) rich in omega-3s. Eat calcium-rich foods (leafy greens, dairy, fortified products). Include anti-inflammatory spices (turmeric, ginger). Consume colorful vegetables and fruits."
-            },
-            cancer_prevention: {
-                name: "Cancer Prevention & Recovery Support",
-                mustHave: [
-                    "Antioxidant Complex (Vitamins C, E, Beta-carotene, Selenium)",
-                    "CoQ10 (cellular energy)",
-                    "Folate & B-Vitamins (for DNA repair)",
-                    "Phytochemical-Rich Supplements (from plant sources)"
-                ],
-                recommended: [
-                    "Green Tea Extract (EGCG for cellular protection)",
-                    "Resveratrol (from grape skin)",
-                    "Silymarin (milk thistle for liver support)",
-                    "Lycopene"
-                ],
-                optional: [
-                    "Indole-3-Carbinol (from cruciferous vegetables)",
-                    "Quercetin",
-                    "Ellagic Acid"
-                ],
-                lifestyle: [
-                    "Exercise 30+ minutes daily - walking, jogging, swimming",
-                    "Maintain healthy weight (obesity increases cancer risk)",
-                    "Limit alcohol consumption",
-                    "Avoid tobacco and secondhand smoke",
-                    "Get regular health screenings appropriate for your age"
-                ],
-                eatingHabits: "Eat abundant colorful vegetables (cruciferous like broccoli, orange vegetables, dark leafy greens). Include berries daily. Consume whole grains instead of refined carbohydrates. Limit red and processed meats."
-            },
-            alzheimers: {
-                name: "Alzheimer's & Dementia Risk Prevention",
-                mustHave: [
-                    "Antioxidant Complex (Vitamins C, E, Beta-carotene)",
-                    "B-Complex Vitamins (especially B6, B12, folate for homocysteine reduction)",
-                    "Omega-3 Fatty Acids (DHA for brain health)",
-                    "CoQ10 (for cellular energy)"
-                ],
-                recommended: [
-                    "Phosphatidylserine",
-                    "Ginkgo Biloba",
-                    "Acetyl-L-Carnitine",
-                    "Alpha-Lipoic Acid"
-                ],
-                optional: [
-                    "Curcumin (turmeric)",
-                    "Resveratrol",
-                    "Huperzine A"
-                ],
-                lifestyle: [
-                    "Engage in regular aerobic exercise (30+ minutes, 5 days/week)",
-                    "Practice cognitive activities (reading, puzzles, learning new skills)",
-                    "Maintain strong social connections",
-                    "Sleep 7-9 hours nightly for brain waste clearance",
-                    "Manage cardiovascular risk factors"
-                ],
-                eatingHabits: "Follow a Mediterranean-style diet rich in olive oil, fish, vegetables, and nuts. Include fatty fish 2-3 times weekly. Eat colorful vegetables and berries daily."
-            },
-            parkinsons: {
-                name: "Parkinson's Disease Management",
-                mustHave: [
-                    "Antioxidant Complex (Vitamins C, E, particularly important)",
-                    "CoQ10 (crucial for neurological health)",
-                    "Omega-3 Fatty Acids",
-                    "B-Complex Vitamins"
-                ],
-                recommended: [
-                    "Alpha-Lipoic Acid",
-                    "Green Tea Extract",
-                    "Acetyl-L-Carnitine",
-                    "Folic Acid"
-                ],
-                optional: [
-                    "Creatine",
-                    "Vitamin D",
-                    "Iron-free antioxidant formulas"
-                ],
-                lifestyle: [
-                    "Exercise 30+ minutes daily - walking, tai chi, dance",
-                    "Practice balance and flexibility exercises",
-                    "Participate in physical therapy",
-                    "Maintain social engagement",
-                    "Sleep 7-8 hours nightly"
-                ],
-                eatingHabits: "Ensure adequate protein intake for brain health. Eat antioxidant-rich foods (berries, dark leafy greens, colored vegetables). Consume omega-3 sources (fish, flax, walnuts)."
-            },
-            ms: {
-                name: "Multiple Sclerosis Support",
-                mustHave: [
-                    "Vitamin D (crucial for immune regulation)",
-                    "Omega-3 Fatty Acids (for immune balance)",
-                    "Antioxidant Complex",
-                    "B-Complex Vitamins (especially B12)"
-                ],
-                recommended: [
-                    "Lipoic Acid",
-                    "Ginger (anti-inflammatory)",
-                    "Turmeric/Curcumin",
-                    "Probiotics (for gut health)"
-                ],
-                optional: [
-                    "CoQ10",
-                    "L-Glutamine",
-                    "Magnesium"
-                ],
-                lifestyle: [
-                    "Exercise as tolerated (walking, swimming, yoga)",
-                    "Manage fatigue with rest and pacing",
-                    "Reduce stress through relaxation techniques",
-                    "Get 8-9 hours of sleep nightly",
-                    "Avoid overheating and extreme temperature changes"
-                ],
-                eatingHabits: "Include fatty fish 2-3 times weekly. Eat anti-inflammatory foods (berries, leafy greens, colored vegetables). Include whole grains for fiber. Stay well-hydrated."
-            },
-            autoimmune: {
-                name: "Autoimmune Disease Support",
-                mustHave: [
-                    "Antioxidant Complex (for immune system balance)",
-                    "Omega-3 Fatty Acids (anti-inflammatory)",
-                    "Probiotics (for gut health)",
-                    "Vitamin D (for immune regulation)"
-                ],
-                recommended: [
-                    "L-Glutamine (for gut lining integrity)",
-                    "Turmeric/Curcumin (powerful anti-inflammatory)",
-                    "Ginger Extract",
-                    "Bone Broth Collagen"
-                ],
-                optional: [
-                    "Quercetin",
-                    "Resveratrol",
-                    "Zinc"
-                ],
-                lifestyle: [
-                    "Exercise gently 3-5 times per week",
-                    "Manage stress with meditation, deep breathing",
-                    "Sleep 8-9 hours nightly",
-                    "Identify and avoid food triggers",
-                    "Work with healthcare team on complementary therapies"
-                ],
-                eatingHabits: "Focus on whole, unprocessed foods. Include anti-inflammatory foods (fatty fish, berries, leafy greens, olive oil). Eliminate common triggers when identified."
-            },
-            fibromyalgia: {
-                name: "Chronic Fatigue & Fibromyalgia",
-                mustHave: [
-                    "CoQ10 (for cellular energy production)",
-                    "Magnesium (for muscle pain and energy)",
-                    "B-Complex Vitamins (for energy metabolism)",
-                    "Antioxidant Complex (for oxidative stress)"
-                ],
-                recommended: [
-                    "L-Carnitine (for energy)",
-                    "Alpha-Lipoic Acid",
-                    "Acetyl-L-Carnitine",
-                    "5-HTP (for pain and sleep)"
-                ],
-                optional: [
-                    "Ginseng (energy)",
-                    "D-Ribose",
-                    "Malic Acid"
-                ],
-                lifestyle: [
-                    "Perform gentle, gradual exercise (stretching, tai chi, water aerobics)",
-                    "Practice pacing - balance activity with rest",
-                    "Get 8-10 hours of quality sleep nightly",
-                    "Manage stress through meditation, yoga",
-                    "Apply heat therapy to affected areas"
-                ],
-                eatingHabits: "Eat frequent, small, balanced meals to maintain energy. Include protein at each meal. Include magnesium-rich foods (leafy greens, seeds, nuts)."
-            },
-            lung_disease: {
-                name: "Lung Disease & Asthma Support",
-                mustHave: [
-                    "Antioxidant Complex (Vitamins C, E, Beta-carotene)",
-                    "Selenium (for lung protection)",
-                    "B-Complex Vitamins",
-                    "Omega-3 Fatty Acids (anti-inflammatory)"
-                ],
-                recommended: [
-                    "N-Acetyl Cysteine (NAC - for lung function)",
-                    "Quercetin (natural antihistamine)",
-                    "Ginger Extract (anti-inflammatory)",
-                    "Turmeric/Curcumin"
-                ],
-                optional: [
-                    "Licorice Root",
-                    "Coleus Forskohlii",
-                    "Magnesium"
-                ],
-                lifestyle: [
-                    "Perform breathing exercises daily",
-                    "Exercise gently (walking, swimming preferred)",
-                    "Avoid air pollutants, smoke, and allergens",
-                    "Maintain healthy weight",
-                    "Sleep in elevated position if needed"
-                ],
-                eatingHabits: "Include antioxidant-rich colorful vegetables and fruits. Eat fatty fish 2-3 times weekly. Include garlic and onions."
-            },
-            eye_health: {
-                name: "Eye Health (Cataracts, Macular Degeneration)",
-                mustHave: [
-                    "Lutein & Zeaxanthin (for macular health)",
-                    "Antioxidant Complex (Vitamins C, E, Beta-carotene)",
-                    "Zinc (for retinal health)",
-                    "Anthocyanins (from berries)"
-                ],
-                recommended: [
-                    "Vitamin A (for vision)",
-                    "Bilberry Extract",
-                    "Ginkgo Biloba",
-                    "Alpha-Lipoic Acid"
-                ],
-                optional: [
-                    "Astaxanthin",
-                    "Resveratrol",
-                    "Copper"
-                ],
-                lifestyle: [
-                    "Protect eyes from UV exposure (wear sunglasses)",
-                    "Take regular screen breaks (20-20-20 rule)",
-                    "Exercise regularly for eye circulation",
-                    "Get regular eye exams",
-                    "Don't smoke"
-                ],
-                eatingHabits: "Eat dark leafy greens (spinach, kale) daily for lutein/zeaxanthin. Include colorful berries as antioxidants. Eat orange vegetables (carrots, sweet potatoes)."
-            },
-            high_cholesterol: {
-                name: "High Cholesterol Management",
-                mustHave: [
-                    "Plant Sterols (for cholesterol reduction)",
-                    "Red Yeast Rice Extract",
-                    "Fiber (soluble fiber reduces cholesterol)",
-                    "Omega-3 Fatty Acids"
-                ],
-                recommended: [
-                    "Niacin (B3 - raises HDL)",
-                    "Garlic Extract",
-                    "Policosanol",
-                    "Artichoke Extract"
-                ],
-                optional: [
-                    "Pantethine",
-                    "Guggul",
-                    "Soy Isoflavones"
-                ],
-                lifestyle: [
-                    "Exercise 30+ minutes, 5+ days per week",
-                    "Maintain healthy weight",
-                    "Reduce stress",
-                    "Get 7-8 hours of sleep nightly",
-                    "Monitor cholesterol levels regularly"
-                ],
-                eatingHabits: "Increase soluble fiber (oats, beans, apples). Eat fatty fish 2-3 times weekly. Choose lean meats and poultry. Limit saturated fats."
-            },
-            high_bp: {
-                name: "High Blood Pressure Management",
-                mustHave: [
-                    "Potassium (for blood pressure regulation)",
-                    "Magnesium (for vascular relaxation)",
-                    "Antioxidant Complex",
-                    "CoQ10 (shown to lower BP)"
-                ],
-                recommended: [
-                    "Garlic Extract (natural BP reducer)",
-                    "Hibiscus Tea Extract",
-                    "Olive Leaf Extract",
-                    "L-Arginine (for blood vessel function)"
-                ],
-                optional: [
-                    "Hawthorn",
-                    "Celery Extract",
-                    "Omega-3 Fatty Acids"
-                ],
-                lifestyle: [
-                    "Exercise 30+ minutes, 5 days per week",
-                    "Manage stress through meditation or yoga",
-                    "Limit sodium to less than 2,300mg per day",
-                    "Maintain healthy weight",
-                    "Get 7-8 hours of sleep nightly"
-                ],
-                eatingHabits: "Eat DASH diet - rich in fruits, vegetables, whole grains, lean proteins. Include potassium-rich foods (bananas, spinach, beans). Limit sodium."
-            },
-            allergies: {
-                name: "Allergies & Sinusitis Relief",
-                mustHave: [
-                    "Quercetin (natural antihistamine)",
-                    "Antioxidant Complex (for immune balance)",
-                    "Probiotics (for gut and respiratory immunity)",
-                    "Vitamin C (supports immune function)"
-                ],
-                recommended: [
-                    "Bromelain (from pineapple - reduces inflammation)",
-                    "Stinging Nettle",
-                    "Butterbur",
-                    "N-Acetyl Cysteine (NAC)"
-                ],
-                optional: [
-                    "Quercetin + Bromelain (synergistic)",
-                    "Ginger",
-                    "Turmeric"
-                ],
-                lifestyle: [
-                    "Identify and avoid known allergen triggers",
-                    "Use air purifiers in bedroom and work areas",
-                    "Shower and wash hair before bed to remove pollen",
-                    "Exercise regularly",
-                    "Get 8 hours of sleep for immune support"
-                ],
-                eatingHabits: "Include anti-inflammatory foods (berries, leafy greens, ginger, turmeric). Eat local raw honey for natural allergy desensitization. Stay well-hydrated."
-            },
-            wellness: {
-                name: "General Wellness & Prevention",
-                mustHave: [
-                    "Complete Multivitamin (foundational health support)",
-                    "Antioxidant Complex (Vitamins C, E, Beta-carotene)",
-                    "Omega-3 Fatty Acids (heart and brain health)",
-                    "Mineral Complex (Calcium, Magnesium, Zinc)"
-                ],
-                recommended: [
-                    "CoQ10 (cellular energy)",
-                    "Probiotics (digestive and immune health)",
-                    "B-Complex Vitamins (energy metabolism)",
-                    "Vitamin D3 (bone and immune health)"
-                ],
-                optional: [
-                    "Ginseng (energy and vitality)",
-                    "Ginkgo Biloba (cognitive function)",
-                    "Saw Palmetto (men's health)",
-                    "Red Clover (women's health)"
-                ],
-                lifestyle: [
-                    "Exercise 30+ minutes, 5 days per week",
-                    "Practice stress management (meditation, yoga)",
-                    "Get 7-8 hours of quality sleep nightly",
-                    "Maintain healthy weight",
-                    "Stay socially connected",
-                    "Get regular health check-ups"
-                ],
-                eatingHabits: "Eat a balanced diet rich in whole foods - lots of colorful fruits and vegetables. Include lean proteins. Choose whole grains. Include healthy fats."
-            }
-        };
+    <div class="card">
+      <h2>2. Health areas</h2>
+      <p class="muted">Tick anything you have now, or want to look after. Tick "No health issues" if nothing applies.</p>
+      <div id="areaGroups"></div>
+    </div>
 
-        // Google Apps Script web app URL (Deploy > New deployment > Web app). Ends in /exec
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzh4a13bSIuyYc_IydI8MWebGCSqIQtzEr784Oc2YE1w5IDvMWs4CeaUsfTnEaViIYn/exec';
+    <div class="card">
+      <h2>3. Your lifestyle</h2>
+      <div class="row">
+        <div class="field"><label for="exercise">Exercise</label>
+          <select id="exercise"><option value="">Choose</option><option>Hardly any</option><option>1-2 days a week</option><option>3-4 days a week</option><option>5+ days a week</option></select></div>
+        <div class="field"><label for="diet">Fruit and vegetables</label>
+          <select id="diet"><option value="">Choose</option><option>0-2 portions a day</option><option>3-4 portions a day</option><option>5-6 portions a day</option><option>7+ portions a day</option></select></div>
+      </div>
+      <div class="row">
+        <div class="field"><label for="sleep">Sleep</label>
+          <select id="sleep"><option value="">Choose</option><option>Under 6 hours</option><option>6-7 hours</option><option>7-8 hours</option><option>Over 8 hours</option></select></div>
+        <div class="field"><label for="stress">Stress</label>
+          <select id="stress"><option value="">Choose</option><option>Low</option><option>Moderate</option><option>High</option></select></div>
+      </div>
+      <div class="field"><label for="smoker">Do you smoke?</label>
+        <select id="smoker"><option value="">Choose</option><option>No</option><option>Yes</option></select></div>
+    </div>
 
-        async function callBackend(payload) {
-            if (SCRIPT_URL.indexOf('PASTE_') === 0) {
-                throw new Error('Registration is not switched on yet. Please try again later.');
-            }
-            const response = await fetch(SCRIPT_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                body: JSON.stringify(payload)
-            });
-            return response.json();
-        }
+    <div class="card">
+      <h2>4. Safety questions</h2>
+      <p class="muted">These change the advice you see. Some supplements don't mix with some medicines.</p>
+      <div class="row">
+        <div class="field"><label for="prescription">Do you take any prescription medicine?</label>
+          <select id="prescription"><option value="">Choose</option><option>No</option><option>Yes</option></select></div>
+        <div class="field"><label for="bloodThinner">Do you take a blood thinner (e.g. warfarin, apixaban, rivaroxaban, clopidogrel)?</label>
+          <select id="bloodThinner"><option value="">Choose</option><option>No</option><option>Yes</option><option>Not sure</option></select></div>
+      </div>
+      <div class="row">
+        <div class="field"><label for="pregnant">Are you pregnant or breastfeeding?</label>
+          <select id="pregnant"><option value="">Choose</option><option>No</option><option>Yes</option><option>Not applicable</option></select></div>
+        <div class="field"><label for="allergy">Are you allergic to fish or shellfish?</label>
+          <select id="allergy"><option value="">Choose</option><option>None</option><option>Fish</option><option>Shellfish</option><option>Fish and shellfish</option></select></div>
+      </div>
+    </div>
 
-        // Passwords never leave the browser in plain text; only a SHA-256 hash is stored
-        async function hashPassword(email, password) {
-            const bytes = new TextEncoder().encode(email.trim().toLowerCase() + ':' + password);
-            const digest = await crypto.subtle.digest('SHA-256', bytes);
-            return Array.from(new Uint8Array(digest)).map(b => b.toString(16).padStart(2, '0')).join('');
-        }
+    <div class="actions no-print">
+      <button class="btn btn-primary" id="resultsBtn" onclick="submitAssessment()">See my results</button>
+    </div>
+  </section>
 
-        // User session management
-        let currentUser = null;
-        let assessmentData = null;
-        let assessmentSave = null;
+  <!-- Results -->
+  <section id="resultsPage" class="page">
+    <div class="userbar"><span id="userBar2"></span><span><button class="btn-link" onclick="deleteMyData()">Delete my data</button> &nbsp;|&nbsp; <button class="btn-link" onclick="logout()">Log out</button></span></div>
+    <div class="actions no-print" style="margin-top:0;margin-bottom:14px">
+      <button class="btn btn-secondary" onclick="window.print()">Print or save as PDF</button>
+      <button class="btn btn-secondary" onclick="showPage('assessmentPage')">Change my answers</button>
+    </div>
+    <div id="results"></div>
 
-        function assessmentPayload() {
-            return {
-                action: 'assessment',
-                email: currentUser.email,
-                name: currentUser.name,
-                age: assessmentData.age,
-                gender: assessmentData.gender,
-                height: assessmentData.height,
-                weight: assessmentData.weight,
-                bmi: assessmentData.bmi,
-                bmiCategory: assessmentData.riskLevel,
-                exercise: assessmentData.exercise,
-                diet: assessmentData.diet,
-                sleep: assessmentData.sleep,
-                stress: assessmentData.stress,
-                conditions: assessmentData.conditions.map(k => recommendations[k] ? recommendations[k].name : k).join(', ')
-            };
-        }
+    <div class="card no-print" id="finishCard">
+      <h2>Talk it through</h2>
+      <p>Girish BP has 20 years' experience with Nutrilite. He can go through your results with you, answer questions and help you order.</p>
+      <label class="check"><input type="checkbox" id="wantsCall"><span>Yes, please contact me about my results.</span></label>
+      <div class="field" style="max-width:360px"><label for="callPhone">Best phone or WhatsApp number (optional)</label><input type="tel" id="callPhone"></div>
+      <div class="actions"><button class="btn btn-primary" id="finishBtn" onclick="finish()">Save and finish</button></div>
+      <p class="small muted">Your answers are already saved to your account. This button records whether you'd like a call.</p>
+    </div>
+    <div class="card no-print" id="thanksCard" style="display:none">
+      <h2>Thank you</h2>
+      <p id="thanksText"></p>
+      <div class="actions"><button class="btn btn-secondary" onclick="window.print()">Print or save as PDF</button><button class="btn btn-secondary" onclick="logout(true)">Log out</button></div>
+    </div>
+  </section>
+</main>
 
-        // Registration
-        document.getElementById('registrationForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
+<footer>
+  <div class="wrap">
+    <p><a href="privacy.html">Privacy Notice</a> &nbsp;|&nbsp; Contact: <a href="mailto:aishwaryaintl@outlook.com">aishwaryaintl@outlook.com</a></p>
+    <p>Aishwarya Intl Ltd is an independent Amway Business Owner. Nutrilite™ is a trademark of Amway. Product details come from amway.co.uk (checked September 2026) and can change.</p>
+    <p>The nutrient suggestions follow Ray D. Strand, MD, <i>What Your Doctor Doesn't Know About Nutritional Medicine May Be Killing You</i> (Thomas Nelson, 2002), chapter 17. This site is not connected with Dr Strand or his publisher.</p>
+    <p>This check does not diagnose, treat, cure or prevent any disease. Food supplements should not replace a varied, balanced diet and a healthy lifestyle. Speak to your GP or pharmacist before starting supplements, especially if you take medicine, are pregnant or breastfeeding, or have a medical condition.</p>
+  </div>
+</footer>
 
-            const name = document.getElementById('regName').value;
-            const email = document.getElementById('regEmail').value;
-            const password = document.getElementById('regPassword').value;
-            const confirmPassword = document.getElementById('regConfirmPassword').value;
-            const phone = document.getElementById('regPhone').value;
-            const consent = document.getElementById('regConsent').checked;
+<script>
+// ---------------- Settings ----------------
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzh4a13bSIuyYc_IydI8MWebGCSqIQtzEr784Oc2YE1w5IDvMWs4CeaUsfTnEaViIYn/exec';   // Apps Script web app URL, ends in /exec
+const PRIVACY_VERSION = '2026-09-11';
+const AMWAY = 'https://www.amway.co.uk';
 
-            const errorDiv = document.getElementById('regError');
-            errorDiv.classList.remove('active');
-            errorDiv.textContent = '';
+// ---------------- Nutrilite UK products (checked on amway.co.uk, September 2026) ----------------
+const NUTRILITE = {
+  doublex:     { name: 'Nutrilite DOUBLE X', path: '/Refill-DOUBLE-X%E2%84%A2/p/292409', facts: '12 vitamins, 10 minerals and 22 plant concentrates, including quercetin, lutein and grape extract.' },
+  daily:       { name: 'Nutrilite Daily', path: '/Daily/p/125167', facts: 'A lower-cost daily multivitamin and mineral.' },
+  omega3:      { name: 'Nutrilite Omega-3 Fish Oil Triple Strength', path: '/Omega-3-Fish-Oil-Triple-Strength/p/126132', facts: 'EPA and DHA from fish oil. One softgel a day. Contains fish.' },
+  coq10:       { name: 'Nutrilite Coenzyme Q10', path: '/Coenzyme-Q10/p/0191', facts: '30 mg CoQ10 per capsule.' },
+  calmag:      { name: 'Nutrilite Cal Mag D Plus', path: '/Cal-Mag-D-Plus/p/110606', facts: '600 mg calcium, 250 mg magnesium and vitamin D3 across 3 tablets.' },
+  vitc:        { name: 'Nutrilite Vitamin C Plus Extended Release', path: '/Vitamin-C-Plus---Extended-Release/p/109741', facts: 'Slow-release vitamin C with acerola cherry.' },
+  vitd:        { name: 'Nutrilite Vitamin D', path: '/Vitamin-D/p/119797', facts: '15 µg (600 IU) vitamin D per tablet.' },
+  vitb:        { name: 'Nutrilite Vitamin B Plus', path: '/Vitamin-B-Plus/p/110178', facts: 'All 8 B vitamins, including B6, B12 and folic acid.' },
+  glucosamine: { name: 'Nutrilite Glucosamine', path: '/Glucosamine/p/101841', facts: '350 mg glucosamine hydrochloride per capsule. Made from shellfish.' },
+  vision:      { name: 'Nutrilite Vision Plus', path: '/Vision-Plus/p/124321', facts: '12 mg lutein, 2.4 mg zeaxanthin, lycopene, beta-carotene and zinc.' },
+  fibre:       { name: 'Nutrilite Fibre Powder', path: '/Fibre-Powder/p/102736', facts: '5 g soluble fibre per stick.' },
+  lecithinE:   { name: 'Nutrilite Lecithin-E', path: '/Lecithin-E/p/4042', facts: 'Natural-source vitamin E with lecithin.' },
+  fruitsveg:   { name: 'Nutrilite Fruits and Vegetables', path: '/Fruits-and-Vegetables/p/100296', facts: 'Concentrates of green tea, pomegranate, blueberry, broccoli, spinach, tomato and more.' }
+};
 
-            // Validation
-            if (password !== confirmPassword) {
-                errorDiv.textContent = 'Passwords do not match!';
-                errorDiv.classList.add('active');
-                return;
-            }
+// ---------------- Things the book mentions that Nutrilite UK doesn't sell ----------------
+const ELSEWHERE = {
+  grapeseed:   { name: 'Grape-seed extract (OPCs)', facts: 'Not in the Nutrilite UK range. Sold by pharmacies, health food shops and online retailers.' },
+  tmg:         { name: 'TMG (trimethylglycine)', facts: 'Only if a blood test shows raised homocysteine and your GP agrees. Not in the Nutrilite UK range.' },
+  chondroitin: { name: 'Chondroitin or MSM', facts: 'Optional. Dr Strand felt the evidence was weaker for these. Not in the Nutrilite UK range.' }
+};
 
-            if (password.length < 6) {
-                errorDiv.textContent = 'Password must be at least 6 characters long!';
-                errorDiv.classList.add('active');
-                return;
-            }
+// ---------------- Health areas shown in the form ----------------
+const AREA_GROUPS = [
+  ['Heart & circulation', [['heart', 'Heart disease or angina'], ['cholesterol', 'High cholesterol'], ['bp', 'High blood pressure']]],
+  ['Blood sugar', [['diabetes', 'Diabetes (type 1 or 2)']]],
+  ['Joints & bones', [['oa', 'Osteoarthritis (wear-and-tear joint pain)'], ['ra', 'Rheumatoid arthritis'], ['osteoporosis', 'Osteoporosis or thinning bones']]],
+  ['Eyes', [['eyes', 'Macular degeneration or cataracts']]],
+  ['Brain & nerves', [['memory', "Memory loss, Alzheimer's or dementia"], ['parkinsons', "Parkinson's disease"], ['ms', 'Multiple sclerosis (MS)']]],
+  ['Immune system', [['autoimmune', "Lupus, Crohn's or another autoimmune condition"], ['allergies', 'Hay fever, allergies or sinus problems']]],
+  ['Lungs', [['asthma', 'Asthma'], ['copd', 'COPD or emphysema']]],
+  ['Energy', [['fibro', 'Chronic fatigue syndrome or fibromyalgia'], ['tired', 'Often tired or low on energy']]],
+  ['Other', [['cancer', 'Cancer, now or in the past'], ['wellness', 'No health issues. I want to stay well']]]
+];
+const AREA_TO_GUIDE = { heart: 'heart', cholesterol: 'heart', bp: 'heart', diabetes: 'diabetes', oa: 'oa', ra: 'ra',
+  osteoporosis: 'osteoporosis', eyes: 'eyes', memory: 'brain', parkinsons: 'brain', ms: 'ms', autoimmune: 'autoimmune',
+  allergies: 'allergies', asthma: 'asthma', copd: 'copd', fibro: 'fibro', tired: 'tired', cancer: 'cancer', wellness: 'wellness' };
 
-            if (!consent) {
-                errorDiv.textContent = 'You must agree to share your assessment for follow-up.';
-                errorDiv.classList.add('active');
-                return;
-            }
+// n = Nutrilite product, e = buy elsewhere. Third value = why it's there.
+const GUIDES = {
+  foundation: {
+    title: 'Start here: the basics for everyone',
+    book: "Dr Strand calls this \"cellular nutrition\": a complete multivitamin, mineral and antioxidant supplement, plus essential fats and fibre. Every patient in his book starts here. Extras for specific health areas go on top.",
+    change: ['Eat at least 7 portions of fruit and vegetables a day. That is Dr Strand\'s target, higher than the usual 5.',
+      'Be active for 150 minutes a week. Brisk walking counts.',
+      'Cut processed food, sugar and fried food.',
+      "Don't smoke.",
+      'Sleep 7-8 hours a night.']
+  },
+  heart: {
+    title: 'Heart & circulation',
+    book: 'Dr Strand links heart disease to inflammation, oxidised LDL cholesterol and raised homocysteine. On top of the basics he added grape-seed extract, CoQ10 and extra magnesium, and made sure patients got vitamin E and enough B vitamins.',
+    extras: [['e', 'grapeseed', 'His main extra for the heart'], ['n', 'coq10', 'CoQ10'], ['n', 'calmag', 'Extra magnesium'], ['n', 'vitb', 'B vitamins, which help keep homocysteine normal'], ['e', 'tmg', 'For raised homocysteine']],
+    optional: [['n', 'lecithinE', 'Vitamin E']],
+    notes: ['If you take a statin, ask your GP about CoQ10. Statins lower the amount of CoQ10 your body makes.'],
+    change: ['Walk briskly or cycle for 30 minutes, 5 days a week.', 'Eat oily fish (salmon, mackerel, sardines) twice a week.',
+      'Swap processed and fried food for vegetables, beans, nuts and olive oil.', 'Keep salt under 6 g a day. Bread, ready meals and sauces hide a lot.',
+      'Ask your GP about a homocysteine blood test. Dr Strand recommends it for anyone with heart disease.']
+  },
+  diabetes: {
+    title: 'Blood sugar',
+    book: 'Dr Strand sees high blood sugar as a big source of the oxidative stress behind diabetes complications. He added grape-seed extract to the basics and said a complete multivitamin and mineral covers the rest.',
+    extras: [['e', 'grapeseed', 'His one extra for diabetes']],
+    change: ['Choose slow-release carbs: oats, beans, lentils, whole grains and vegetables.', 'Cut sugar, sweet drinks, white bread and white rice.',
+      'Have some protein with every meal.', 'Be active 30 minutes a day. Working muscles use up sugar.',
+      'Keep taking your diabetes medicine and checking your sugar as your diabetes team advises. Tell them before you start supplements.']
+  },
+  oa: {
+    title: 'Osteoarthritis',
+    book: 'For osteoarthritis Dr Strand added glucosamine and grape-seed extract. He saw chondroitin and MSM as optional.',
+    extras: [['n', 'glucosamine', 'Glucosamine'], ['e', 'grapeseed', 'Antioxidant extra']],
+    optional: [['e', 'chondroitin', 'Optional extra']],
+    notes: ['The book used glucosamine sulfate. Nutrilite uses glucosamine hydrochloride. Stick to the label dose unless your GP advises otherwise.'],
+    change: ['Keep moving. Walking, swimming and cycling ease stiffness.', 'Strengthen the muscles around sore joints 2-3 times a week.',
+      'Losing even a little weight takes load off knees and hips.', 'Eat oily fish and plenty of colourful vegetables.']
+  },
+  ra: {
+    title: 'Rheumatoid arthritis',
+    book: 'For rheumatoid arthritis Dr Strand added glucosamine, CoQ10, grape-seed extract, extra calcium and magnesium, and more omega-3.',
+    extras: [['n', 'glucosamine', 'Glucosamine'], ['n', 'coq10', 'CoQ10'], ['e', 'grapeseed', 'Antioxidant extra'], ['n', 'calmag', 'Extra calcium and magnesium'], ['n', 'omega3', 'More omega-3']],
+    change: ['Stay active on good days with gentle exercise like swimming or tai chi.', 'Rest during flares.',
+      'Eat oily fish 2-3 times a week.', 'Keep taking the medicine your rheumatology team prescribes.']
+  },
+  osteoporosis: {
+    title: 'Bones',
+    book: 'Dr Strand did not add extras for osteoporosis. He stressed getting enough vitamin D, calcium and magnesium, taking them with food, and doing weight-bearing exercise, including for the upper body.',
+    extras: [['n', 'calmag', 'Calcium, magnesium and vitamin D'], ['n', 'vitd', 'Vitamin D']],
+    change: ['Take calcium with food.', 'Do weight-bearing exercise: brisk walking, stairs, and light weights for arms and shoulders.',
+      'The NHS advises everyone in the UK to consider 10 µg of vitamin D a day in autumn and winter.', "Limit alcohol and don't smoke."]
+  },
+  eyes: {
+    title: 'Eyes',
+    book: 'For macular degeneration Dr Strand added grape-seed extract and extra lutein.',
+    extras: [['n', 'vision', 'Extra lutein and zeaxanthin'], ['e', 'grapeseed', 'Antioxidant extra']],
+    change: ['Eat dark leafy greens like spinach and kale most days. They are rich in lutein.', 'Wear sunglasses with UV protection outdoors.',
+      "Don't smoke. Smoking speeds up macular degeneration.", 'Have an eye test at least every 2 years.']
+  },
+  brain: {
+    title: 'Brain & memory',
+    book: "For Alzheimer's and Parkinson's Dr Strand added grape-seed extract, because it gets into the brain easily. He stressed starting early.",
+    extras: [['e', 'grapeseed', 'His extra for the brain']],
+    change: ['Walk for 30 minutes most days.', 'Keep your brain busy: reading, puzzles, learning something new.',
+      'Stay in touch with friends and family.', 'Eat oily fish, vegetables, berries and nuts.', 'Sleep 7-8 hours.']
+  },
+  ms: {
+    title: 'Multiple sclerosis',
+    book: 'For MS Dr Strand added grape-seed extract, CoQ10 and extra vitamin C. He warned it can take more than 6 months to notice any change.',
+    extras: [['e', 'grapeseed', 'Antioxidant extra'], ['n', 'coq10', 'CoQ10'], ['n', 'vitc', 'Extra vitamin C']],
+    change: ['Exercise as your energy allows: walking, swimming or yoga.', "Pace yourself and rest before you're exhausted.",
+      'Eat oily fish, vegetables and whole grains.', 'Keep working with your neurology team.']
+  },
+  autoimmune: {
+    title: 'Autoimmune conditions',
+    book: "For lupus and Crohn's disease Dr Strand added grape-seed extract and CoQ10. Improvement, when it came, usually took about 6 months.",
+    extras: [['e', 'grapeseed', 'Antioxidant extra'], ['n', 'coq10', 'CoQ10']],
+    change: ['Do gentle, regular exercise.', 'Manage stress. It can set off flares.', 'Eat whole, unprocessed food and oily fish.', 'Keep taking your prescribed medicine.']
+  },
+  allergies: {
+    title: 'Allergies & sinuses',
+    book: "The book doesn't list extras for allergies. The basics come first, especially vitamin C and other antioxidants.",
+    extras: [['n', 'vitc', 'Vitamin C']],
+    change: ['Shower and change clothes after being outside on high-pollen days.', 'Keep windows closed when pollen counts are high.', 'Eat plenty of fruit and vegetables.']
+  },
+  asthma: {
+    title: 'Asthma',
+    book: 'For asthma Dr Strand added grape-seed extract, extra vitamin C and extra magnesium.',
+    extras: [['e', 'grapeseed', 'Antioxidant extra'], ['n', 'vitc', 'Extra vitamin C'], ['n', 'calmag', 'Extra magnesium']],
+    change: ['Avoid your triggers: smoke, dust, pollen, pet hair.', 'Stay active and warm up before exercise.', 'Eat plenty of fruit and vegetables.', 'Keep using your inhalers as prescribed.']
+  },
+  copd: {
+    title: 'COPD & emphysema',
+    book: 'For emphysema Dr Strand found the basics were usually enough. Sometimes he added grape-seed extract, vitamin C and magnesium.',
+    extras: [['e', 'grapeseed', 'Sometimes added'], ['n', 'vitc', 'Extra vitamin C'], ['n', 'calmag', 'Extra magnesium']],
+    change: ['If you smoke, stopping is the biggest thing you can do. Your GP or NHS Smokefree can help.', 'Ask your GP about pulmonary rehabilitation classes.',
+      'Keep moving with short walks every day.', 'Get your flu and pneumonia vaccines.']
+  },
+  fibro: {
+    title: 'Chronic fatigue & fibromyalgia',
+    book: "Dr Strand's wife had fibromyalgia, and that's where his interest in nutrition began. For these patients he added grape-seed extract and CoQ10.",
+    extras: [['e', 'grapeseed', 'His main extra here'], ['n', 'coq10', 'CoQ10']],
+    change: ['Start with very gentle exercise, like stretching or water exercise, and build up slowly.', 'Pace your day: balance activity with rest.',
+      'Keep a regular sleep routine.', 'Eat regular balanced meals. Cut sugar, and cut caffeine after lunch.']
+  },
+  tired: {
+    title: 'Energy',
+    book: 'For lasting tiredness Dr Strand added grape-seed extract to the basics. His patients often felt better within 4-6 weeks.',
+    extras: [['e', 'grapeseed', 'His extra for tiredness'], ['n', 'vitb', 'B vitamins for energy']],
+    notes: ['Tiredness that lasts can have medical causes, such as anaemia or thyroid problems. See your GP if it has gone on for more than a few weeks.'],
+    change: ['Aim for 7-8 hours of sleep at regular times.', 'Get outside and move every day, even for 10 minutes.',
+      'Have protein at breakfast and cut sugary snacks.', 'Drink water through the day.']
+  },
+  cancer: {
+    title: 'Cancer',
+    book: '',
+    change: ["Follow your cancer team's advice.", 'Eat plenty of vegetables, fruit and whole grains.', 'Stay as active as you can.',
+      'Macmillan Cancer Support gives free advice on diet and wellbeing: 0808 808 00 00.']
+  },
+  wellness: {
+    title: 'Staying well',
+    book: "Dr Strand's point: it's far easier to keep your health than to win it back. The basics above are for you.",
+    change: ['Get a health check with your GP if you are 40-74 (the free NHS Health Check).', 'Keep your weight in the healthy range.']
+  }
+};
 
-            const button = document.querySelector('#registrationForm button[type="submit"]');
-            button.disabled = true;
-            button.textContent = 'Creating account...';
-            try {
-                const result = await callBackend({
-                    action: 'register',
-                    name: name.trim(),
-                    email: email.trim(),
-                    phone: phone.trim(),
-                    passwordHash: await hashPassword(email, password),
-                    consent: consent
-                });
-                if (!result.ok) {
-                    errorDiv.textContent = result.error;
-                    errorDiv.classList.add('active');
-                    return;
-                }
-                currentUser = { email: email.trim().toLowerCase(), name: name.trim(), phone: phone.trim() };
-                updateUserInfo();
-                switchPage('assessmentPage');
-            } catch (err) {
-                errorDiv.textContent = err.message || 'Could not reach the server. Please check your connection and try again.';
-                errorDiv.classList.add('active');
-            } finally {
-                button.disabled = false;
-                button.textContent = 'Create Account';
-            }
-        });
+// ---------------- Backend ----------------
+async function callBackend(payload) {
+  if (SCRIPT_URL.indexOf('PASTE_') === 0) throw new Error('Registration is being set up. Please try again later.');
+  const response = await fetch(SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) });
+  return response.json();
+}
+async function hashPassword(email, password) {
+  const bytes = new TextEncoder().encode(email.trim().toLowerCase() + ':' + password);
+  const digest = await crypto.subtle.digest('SHA-256', bytes);
+  return Array.from(new Uint8Array(digest)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
 
-        // Login
-        document.getElementById('loginForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
+// ---------------- State & helpers ----------------
+let currentUser = null;
+let answers = null;
+let assessmentSave = null;
 
-            const email = document.getElementById('loginEmail').value;
-            const password = document.getElementById('loginPassword').value;
-            const errorDiv = document.getElementById('loginError');
-            errorDiv.classList.remove('active');
-            errorDiv.textContent = '';
+const $ = id => document.getElementById(id);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+function showPage(id) { document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); $(id).classList.add('active'); window.scrollTo(0, 0); }
+function showError(id, msg) { const el = $(id); el.textContent = msg; el.classList.add('active'); el.scrollIntoView({ block: 'center' }); }
+function clearError(id) { const el = $(id); el.textContent = ''; el.classList.remove('active'); }
+async function withButton(btn, busyText, fn) { const old = btn.textContent; btn.disabled = true; btn.textContent = busyText; try { return await fn(); } finally { btn.disabled = false; btn.textContent = old; } }
+function setUserBars() { const t = currentUser ? 'Logged in as <b>' + esc(currentUser.name) + '</b>' : ''; $('userBar1').innerHTML = t; $('userBar2').innerHTML = t; }
 
-            const button = document.querySelector('#loginForm button[type="submit"]');
-            button.disabled = true;
-            button.textContent = 'Logging in...';
-            try {
-                const result = await callBackend({
-                    action: 'login',
-                    email: email.trim(),
-                    passwordHash: await hashPassword(email, password)
-                });
-                if (!result.ok) {
-                    errorDiv.textContent = result.error;
-                    errorDiv.classList.add('active');
-                    return;
-                }
-                currentUser = { email: email.trim().toLowerCase(), name: result.name, phone: result.phone };
-                updateUserInfo();
-                switchPage('assessmentPage');
-            } catch (err) {
-                errorDiv.textContent = err.message || 'Could not reach the server. Please check your connection and try again.';
-                errorDiv.classList.add('active');
-            } finally {
-                button.disabled = false;
-                button.textContent = 'Login';
-            }
-        });
+// Build the health area checkboxes
+$('areaGroups').innerHTML = AREA_GROUPS.map(([title, items]) =>
+  '<fieldset><legend>' + esc(title) + '</legend><div class="areas">' +
+  items.map(([key, label]) => '<label class="check"><input type="checkbox" name="area" value="' + key + '"><span>' + esc(label) + '</span></label>').join('') +
+  '</div></fieldset>').join('');
+const AREA_LABEL = {}; AREA_GROUPS.forEach(([, items]) => items.forEach(([k, l]) => AREA_LABEL[k] = l));
 
-        function updateUserInfo() {
-            if (currentUser) {
-                const userInfoHTML = `Logged in as: <strong>${currentUser.name}</strong> | <button type="button" class="btn-link" onclick="logout()">Logout</button>`;
-                document.getElementById('userInfo').innerHTML = userInfoHTML;
-                document.getElementById('userInfo2').innerHTML = userInfoHTML;
-            }
-        }
+// ---------------- Register / log in / log out ----------------
+$('registrationForm').addEventListener('submit', async e => {
+  e.preventDefault(); clearError('regError');
+  const name = $('regName').value.trim(), email = $('regEmail').value.trim(), phone = $('regPhone').value.trim();
+  const pw = $('regPassword').value, pw2 = $('regConfirm').value;
+  if (!name) return showError('regError', 'Please enter your name.');
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return showError('regError', 'Please enter a valid email address.');
+  if (pw.length < 8) return showError('regError', 'Your password needs at least 8 characters.');
+  if (pw !== pw2) return showError('regError', "The passwords don't match.");
+  if (!$('consentAge').checked) return showError('regError', 'This check is only for people aged 18 or over.');
+  if (!$('consentHealth').checked) return showError('regError', "We can't store your health answers without your consent. Please tick the privacy consent box to continue.");
+  await withButton(e.submitter || document.querySelector('#registrationForm button[type=submit]'), 'Creating account...', async () => {
+    try {
+      const r = await callBackend({ action: 'register', name, email, phone, passwordHash: await hashPassword(email, pw),
+        ageConfirmed: true, healthConsent: true, contactConsent: $('consentContact').checked, privacyVersion: PRIVACY_VERSION });
+      if (!r.ok) return showError('regError', r.error);
+      currentUser = { email: email.toLowerCase(), name, phone };
+      setUserBars(); showPage('assessmentPage');
+    } catch (err) { showError('regError', err.message || 'Could not reach the server. Please try again.'); }
+  });
+});
 
-        function switchPage(pageName) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(pageName).classList.add('active');
-        }
+$('loginForm').addEventListener('submit', async e => {
+  e.preventDefault(); clearError('loginError');
+  const email = $('loginEmail').value.trim(), pw = $('loginPassword').value;
+  await withButton(document.querySelector('#loginForm button[type=submit]'), 'Logging in...', async () => {
+    try {
+      const r = await callBackend({ action: 'login', email, passwordHash: await hashPassword(email, pw) });
+      if (!r.ok) return showError('loginError', r.error);
+      currentUser = { email: email.toLowerCase(), name: r.name, phone: r.phone };
+      setUserBars(); showPage('assessmentPage');
+    } catch (err) { showError('loginError', err.message || 'Could not reach the server. Please try again.'); }
+  });
+});
 
-        function switchToLogin() {
-            switchPage('loginPage');
-        }
+function logout(skipConfirm) {
+  if (!skipConfirm && !confirm('Log out?')) return;
+  currentUser = null; answers = null; assessmentSave = null;
+  document.querySelectorAll('form').forEach(f => f.reset());
+  document.querySelectorAll('#assessmentPage input, #assessmentPage select').forEach(el => { if (el.type === 'checkbox') el.checked = false; else el.value = ''; });
+  $('results').innerHTML = ''; $('finishCard').style.display = ''; $('thanksCard').style.display = 'none'; $('wantsCall').checked = false;
+  showPage('registrationPage');
+}
 
-        function switchToRegister() {
-            switchPage('registrationPage');
-        }
+async function deleteMyData() {
+  if (!currentUser) return;
+  const pw = prompt('This permanently deletes your account, answers and any consultation request.\n\nEnter your password to confirm:');
+  if (pw === null) return;
+  try {
+    const r = await callBackend({ action: 'deleteAccount', email: currentUser.email, passwordHash: await hashPassword(currentUser.email, pw) });
+    if (!r.ok) return alert(r.error);
+    alert('Done. Your account and data have been deleted.');
+    logout(true);
+  } catch (err) { alert('Sorry, that did not work. Please email aishwaryaintl@outlook.com and we will delete your data.'); }
+}
 
-        function logout() {
-            if (confirm('Are you sure you want to logout?')) {
-                currentUser = null;
-                document.getElementById('registrationForm').reset();
-                document.getElementById('loginForm').reset();
-                switchPage('registrationPage');
-            }
-        }
+// ---------------- Assessment ----------------
+function submitAssessment() {
+  clearError('assessError');
+  const v = id => $(id).value;
+  const areas = Array.from(document.querySelectorAll('input[name=area]:checked')).map(c => c.value);
+  const age = parseInt(v('age'), 10), height = parseFloat(v('height')), weight = parseFloat(v('weight'));
+  if (!(age >= 18 && age <= 110)) return showError('assessError', 'Please enter your age (18 or over).');
+  if (!(height >= 120 && height <= 230)) return showError('assessError', 'Please enter your height in centimetres (for example 170).');
+  if (!(weight >= 30 && weight <= 300)) return showError('assessError', 'Please enter your weight in kilograms (for example 72.5).');
+  const required = ['gender', 'exercise', 'diet', 'sleep', 'stress', 'smoker', 'prescription', 'bloodThinner', 'pregnant', 'allergy'];
+  if (required.some(id => !v(id))) return showError('assessError', 'Please answer every question. The safety questions matter.');
+  if (!areas.length) return showError('assessError', 'Please tick at least one health area, or "No health issues".');
 
-        // Assessment submission
-        function submitAssessment() {
-            const age = parseInt(document.getElementById('age').value);
-            const height = parseFloat(document.getElementById('height').value);
-            const weight = parseFloat(document.getElementById('weight').value);
-            const gender = document.getElementById('gender').value;
-            const exercise = document.getElementById('exercise').value;
-            const diet = document.getElementById('diet').value;
-            const sleep = document.getElementById('sleep').value;
-            const stress = document.getElementById('stress').value;
+  const bmi = weight / Math.pow(height / 100, 2);
+  const bmiCategory = bmi < 18.5 ? 'Underweight' : bmi < 25 ? 'Healthy weight' : bmi < 30 ? 'Overweight' : 'Obese';
+  answers = { age, height, weight, bmi: bmi.toFixed(1), bmiCategory, areas, gender: v('gender'), exercise: v('exercise'), diet: v('diet'),
+    sleep: v('sleep'), stress: v('stress'), smoker: v('smoker'), prescription: v('prescription'), bloodThinner: v('bloodThinner'),
+    pregnant: v('pregnant'), allergy: v('allergy') };
 
-            const conditions = Array.from(document.querySelectorAll('input[name="conditions"]:checked')).map(cb => cb.value);
+  $('results').innerHTML = renderResults(answers);
+  $('callPhone').value = currentUser.phone || '';
+  showPage('resultsPage');
+  assessmentSave = callBackend(assessmentPayload()).catch(() => ({ ok: false }));
+}
 
-            if (conditions.length === 0) {
-                alert('Please select at least one health condition!');
-                return;
-            }
+function assessmentPayload() {
+  return { action: 'assessment', email: currentUser.email, name: currentUser.name, age: answers.age, gender: answers.gender,
+    height: answers.height, weight: answers.weight, bmi: answers.bmi, bmiCategory: answers.bmiCategory, exercise: answers.exercise,
+    diet: answers.diet, sleep: answers.sleep, stress: answers.stress, smoker: answers.smoker, prescription: answers.prescription,
+    bloodThinner: answers.bloodThinner, pregnant: answers.pregnant, allergy: answers.allergy,
+    healthAreas: answers.areas.map(a => AREA_LABEL[a]).join('; ') };
+}
 
-            if (!age || !height || !weight || !gender || !exercise || !diet || !sleep || !stress) {
-                alert('Please fill in all required fields!');
-                return;
-            }
+// ---------------- Results ----------------
+function renderResults(a) {
+  const guides = [...new Set(a.areas.map(k => AREA_TO_GUIDE[k]))];
+  const hasCancer = guides.includes('cancer');
+  const fishAllergy = /Fish/.test(a.allergy), shellfishAllergy = /hellfish/.test(a.allergy);
 
-            // Calculate BMI
-            const bmi = weight / ((height / 100) ** 2);
+  // Collect items into tiers, Nutrilite first, no duplicates
+  const start = [['n', 'doublex', 'Complete multivitamin, mineral and plant nutrients'], ['n', 'omega3', 'Essential fats']];
+  const add = new Map(), nice = new Map();
+  guides.forEach(g => (GUIDES[g].extras || []).forEach(x => { const id = x[0] + ':' + x[1]; if (!add.has(id) && !start.some(s => s[1] === x[1])) add.set(id, x); }));
+  guides.forEach(g => (GUIDES[g].optional || []).forEach(x => { const id = x[0] + ':' + x[1]; if (!add.has(id)) nice.set(id, x); }));
+  [['n', 'fibre', 'Fibre, part of the book\'s basics'], ['n', 'vitc', 'More vitamin C than a multivitamin gives'], ['n', 'fruitsveg', 'Extra plant antioxidants']]
+    .forEach(x => { const id = x[0] + ':' + x[1]; if (!add.has(id) && !nice.has(id)) nice.set(id, x); });
+  const order = list => [...list].sort((p, q) => (p[0] === q[0] ? 0 : p[0] === 'n' ? -1 : 1));
 
-            // Determine risk level
-            let riskLevel = 'Healthy';
-            let riskColor = 'risk-healthy';
-            if (bmi > 30) {
-                riskLevel = 'High Risk (Obese)';
-                riskColor = 'risk-danger';
-            } else if (bmi > 25) {
-                riskLevel = 'At Risk (Overweight)';
-                riskColor = 'risk-warning';
-            } else if (bmi < 18.5) {
-                riskLevel = 'At Risk (Underweight)';
-                riskColor = 'risk-warning';
-            }
+  const itemHtml = ([src, key, why]) => {
+    const p = src === 'n' ? NUTRILITE[key] : ELSEWHERE[key];
+    let warn = '';
+    if (key === 'glucosamine' && shellfishAllergy) warn = 'You said you are allergic to shellfish. Do not take this product.';
+    if (key === 'omega3' && fishAllergy) warn = 'You said you are allergic to fish. Do not take this product. Ask us about plant-based omega-3.';
+    if (a.bloodThinner !== 'No' && ['omega3', 'coq10', 'grapeseed', 'lecithinE', 'glucosamine'].includes(key)) warn = warn || 'Check with your GP or anticoagulant clinic first, because you take (or may take) a blood thinner.';
+    return '<div class="item"><div class="item-top"><div><div class="item-name">' +
+      (src === 'n' ? '<a href="' + AMWAY + p.path + '" target="_blank" rel="noopener">' + esc(p.name) + '</a>' : esc(p.name)) +
+      '</div><div class="why">' + esc(why) + '. ' + esc(p.facts) + '</div></div>' +
+      '<span class="src ' + (src === 'n' ? 'src-nutrilite">Nutrilite UK' : 'src-elsewhere">Buy anywhere') + '</span></div>' +
+      (warn ? '<div class="warn">' + esc(warn) + '</div>' : '') + '</div>';
+  };
 
-            // Store assessment
-            assessmentData = {
-                user: currentUser,
-                age: age,
-                height: height,
-                weight: weight,
-                gender: gender,
-                bmi: bmi.toFixed(1),
-                exercise: exercise,
-                diet: diet,
-                sleep: sleep,
-                stress: stress,
-                conditions: conditions,
-                riskLevel: riskLevel,
-                riskColor: riskColor,
-                completedAt: new Date().toISOString()
-            };
+  // Safety messages
+  const safety = [];
+  if (a.bloodThinner === 'Yes' || a.bloodThinner === 'Not sure') safety.push("You take, or may take, a blood thinner. Don't start omega-3, grape-seed extract, CoQ10, vitamin E, glucosamine or garlic supplements without speaking to your GP or anticoagulant clinic. Some change how blood thinners work.");
+  if (a.prescription === 'Yes') safety.push('Show this page to your pharmacist or GP before you start. Some supplements interact with medicines, including diabetes, blood pressure and thyroid medicines.');
+  if (a.pregnant === 'Yes') safety.push('Check with your midwife or GP before taking any supplement. Some are not suitable during pregnancy or breastfeeding.');
+  if (shellfishAllergy) safety.push('Nutrilite Glucosamine is made from shellfish. Avoid it.');
+  if (fishAllergy) safety.push('Nutrilite Omega-3 contains fish oil. Avoid it.');
+  if (a.smoker === 'Yes') safety.push('If you smoke, talk to your GP before taking high-dose beta-carotene supplements. Studies found a higher lung cancer risk in smokers who took them. Stopping smoking is the biggest step you can take: NHS Smokefree can help.');
 
-            // Save to Google Sheet in the background while results show
-            assessmentSave = callBackend(assessmentPayload()).catch(() => ({ ok: false }));
+  let html = '<div class="card"><h2>Your results, ' + esc(currentUser.name.split(' ')[0]) + '</h2>' +
+    '<div class="stats"><div class="stat">BMI<b>' + a.bmi + '</b></div><div class="stat">Category<b>' + a.bmiCategory + '</b></div>' +
+    '<div class="stat">Fruit &amp; veg<b>' + esc(a.diet) + '</b></div><div class="stat">Exercise<b>' + esc(a.exercise) + '</b></div></div>' +
+    '<p class="small muted">BMI uses NHS ranges: under 18.5 underweight, 18.5-24.9 healthy, 25-29.9 overweight, 30+ obese. If you are from a South Asian, Chinese, other Asian, Middle Eastern, Black African or African-Caribbean background, the NHS uses lower cut-offs: 23 or more is overweight and 27.5 or more is obese.</p>' +
+    '<div class="box box-info"><b>Please read first.</b> This is education based on a published book, not medical advice. Supplements do not diagnose, treat, cure or prevent disease. Keep taking any medicine you are prescribed, and speak to your GP or pharmacist before starting anything new.</div>';
 
-            // Generate profile
-            let profileHTML = `
-                <div class="health-profile">
-                    <h3>📋 Your Health Profile</h3>
-                    <div class="profile-item"><strong>Name:</strong> ${currentUser.name}</div>
-                    <div class="profile-item"><strong>Age:</strong> ${age} years</div>
-                    <div class="profile-item"><strong>Gender:</strong> ${gender.charAt(0).toUpperCase() + gender.slice(1)}</div>
-                    <div class="profile-item"><strong>BMI:</strong> ${bmi.toFixed(1)} kg/m²</div>
-                    <div class="profile-item"><strong>Exercise Level:</strong> ${exercise.charAt(0).toUpperCase() + exercise.slice(1)}</div>
-                    <div class="profile-item"><strong>Diet Quality:</strong> ${diet.charAt(0).toUpperCase() + diet.slice(1)}</div>
-                    <div class="profile-item"><strong>Sleep Quality:</strong> ${sleep.charAt(0).toUpperCase() + sleep.slice(1)}</div>
-                    <div class="profile-item"><strong>Stress Level:</strong> ${stress.charAt(0).toUpperCase() + stress.slice(1)}</div>
-                    <div><span class="risk-badge ${riskColor}">Health Risk Level: ${riskLevel}</span></div>
-                </div>
-            `;
+  if (safety.length) html += '<div class="box box-warn"><b>Safety points for you</b><ul>' + safety.map(s => '<li>' + esc(s) + '</li>').join('') + '</ul></div>';
+  if (hasCancer) html += '<div class="box box-stop"><b>About cancer.</b> We don\'t recommend any supplement for cancer, and nothing on this page is a cancer treatment. Some supplements can interfere with chemotherapy or radiotherapy, so please ask your cancer team before taking any supplement, including the basics below.</div>';
+  html += '</div>';
 
-            // Generate recommendations
-            let recommendationsHTML = '<h2 class="section-title">💊 Personalized Recommendations</h2>';
+  // Shopping list by tier
+  html += '<div class="card"><h2>Your supplement list</h2>' +
+    '<p class="muted">Nutrilite products are listed first. Where the Nutrilite UK range doesn\'t have something the book mentions, we say so, and you can buy it from any shop. Follow the label dose.</p>' +
+    '<div class="tier"><div class="tier-head"><span class="pill pill-start">Start here</span> The basics</div>' + start.map(itemHtml).join('') +
+    '<p class="small muted">Prefer to spend less? ' + '<a href="' + AMWAY + NUTRILITE.daily.path + '" target="_blank" rel="noopener">Nutrilite Daily</a> is a simpler multivitamin you can use instead of DOUBLE X.</p></div>';
+  if (add.size) html += '<div class="tier"><div class="tier-head"><span class="pill pill-add">Add</span> Extras for your health areas</div>' + order(add.values()).map(itemHtml).join('') + '</div>';
+  html += '<div class="tier"><div class="tier-head"><span class="pill pill-nice">Nice to have</span></div>' + order(nice.values()).map(itemHtml).join('') + '</div>' +
+    '<p class="small muted">Nutrilite products are sold through Amway. Tick "contact me" below and Girish will help you order. Amounts in Dr Strand\'s book are sometimes higher than one label dose. Don\'t take more than the label says unless your GP agrees.</p></div>';
 
-            conditions.forEach(conditionKey => {
-                const condition = recommendations[conditionKey];
-                if (condition) {
-                    recommendationsHTML += `
-                        <div class="condition-card">
-                            <div class="condition-name">${condition.name}</div>
+  // What to change
+  html += '<div class="card"><h2>What to change</h2>';
+  const showGuides = ['foundation'].concat(guides.filter(g => g !== 'wellness' || guides.length === 1));
+  showGuides.forEach(g => {
+    const G = GUIDES[g];
+    html += '<div class="area-card"><h3>' + esc(G.title) + '</h3>' +
+      (G.book ? '<p class="book">' + esc(G.book) + '</p>' : '') +
+      ((G.notes || []).map(n => '<div class="box box-warn small">' + esc(n) + '</div>').join('')) +
+      '<ul>' + G.change.map(c => '<li>' + esc(c) + '</li>').join('') + '</ul></div>';
+  });
+  html += '</div>';
+  return html;
+}
 
-                            <div class="product-tier">
-                                <div class="tier-title">★ Must-Have Supplements</div>
-                                <p style="color: #666; margin: 10px 0; font-size: 0.9em;">Essential products for comprehensive support:</p>
-                                <ul class="product-list">
-                                    ${condition.mustHave.map(p => `<li>• ${p}</li>`).join('')}
-                                </ul>
-                            </div>
-
-                            <div class="product-tier">
-                                <div class="tier-title">✓ Recommended Supplements</div>
-                                <p style="color: #666; margin: 10px 0; font-size: 0.9em;">Additional support products:</p>
-                                <ul class="product-list">
-                                    ${condition.recommended.map(p => `<li>• ${p}</li>`).join('')}
-                                </ul>
-                            </div>
-
-                            <div class="product-tier">
-                                <div class="tier-title">+ Optional Supplements</div>
-                                <p style="color: #666; margin: 10px 0; font-size: 0.9em;">Additional options:</p>
-                                <ul class="product-list">
-                                    ${condition.optional.map(p => `<li>• ${p}</li>`).join('')}
-                                </ul>
-                            </div>
-
-                            <div class="lifestyle-section">
-                                <h4>🏃 Lifestyle Recommendations</h4>
-                                ${condition.lifestyle.map(item => `<div class="lifestyle-item">${item}</div>`).join('')}
-                            </div>
-
-                            <div class="eating-habits">
-                                <h4>🥗 Eating Habits to Adopt</h4>
-                                <p>${condition.eatingHabits}</p>
-                            </div>
-                        </div>
-                    `;
-                }
-            });
-
-            document.getElementById('profileResults').innerHTML = profileHTML;
-            document.getElementById('recommendationsResults').innerHTML = recommendationsHTML;
-
-            switchPage('resultsPage');
-            window.scrollTo(0, 0);
-        }
-
-        function backToAssessment() {
-            switchPage('assessmentPage');
-        }
-
-        async function submitConsultationPreference() {
-            const optIn = document.getElementById('consultationOptIn').checked;
-            const button = document.querySelector('.opt-in-section button');
-            button.disabled = true;
-            button.textContent = 'Saving...';
-            try {
-                const saved = await assessmentSave;
-                if (!saved || !saved.ok) {
-                    const retry = await callBackend(assessmentPayload());
-                    if (!retry.ok) throw new Error(retry.error);
-                }
-                const result = await callBackend({
-                    action: 'consultation',
-                    email: currentUser.email,
-                    name: currentUser.name,
-                    phone: currentUser.phone || '',
-                    wantsConsultation: optIn
-                });
-                if (!result.ok) throw new Error(result.error);
-
-                alert(optIn
-                    ? 'Thank you! Your assessment is saved. Girish or a member of the Aishwarya team will contact you soon.'
-                    : 'Thank you! Your assessment is saved.');
-                currentUser = null;
-                assessmentData = null;
-                document.getElementById('registrationForm').reset();
-                document.getElementById('loginForm').reset();
-                switchPage('registrationPage');
-                window.scrollTo(0, 0);
-            } catch (err) {
-                alert('Sorry, we could not save your assessment just now. Please try again in a minute.');
-            } finally {
-                button.disabled = false;
-                button.textContent = 'Complete Assessment';
-            }
-        }
-
-        // Initialize
-        updateUserInfo();
-    </script>
+// ---------------- Finish ----------------
+async function finish() {
+  const wants = $('wantsCall').checked;
+  await withButton($('finishBtn'), 'Saving...', async () => {
+    try {
+      const saved = await assessmentSave;
+      if (!saved || !saved.ok) { const retry = await callBackend(assessmentPayload()); if (!retry.ok) throw new Error(retry.error); }
+      const r = await callBackend({ action: 'consultation', email: currentUser.email, name: currentUser.name,
+        phone: $('callPhone').value.trim() || currentUser.phone || '', wantsConsultation: wants });
+      if (!r.ok) throw new Error(r.error);
+      $('finishCard').style.display = 'none';
+      $('thanksText').textContent = wants
+        ? 'Your results are saved. Girish or a member of the Aishwarya team will be in touch soon.'
+        : 'Your answers are saved. Print or save this page as a PDF to keep a copy of your results.';
+      $('thanksCard').style.display = '';
+    } catch (err) { alert('Sorry, we could not save that just now. Please try again in a minute.'); }
+  });
+}
+</script>
 </body>
 </html>
