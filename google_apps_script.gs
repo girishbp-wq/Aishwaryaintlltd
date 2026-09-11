@@ -1,5 +1,5 @@
 /**
- * Aishwarya International - Health Assessment backend (v3)
+ * Aishwarya International - Health Assessment backend (v4: full lifestyle questionnaire)
  *
  * Create this while signed in as bpg2504@gmail.com, so that account owns the sheet and the data.
  *
@@ -38,9 +38,10 @@ const SHEETS = {
 const HEADERS = {
   'Registrations': ['Timestamp', 'Name', 'Email', 'Phone', 'Password Hash', 'Aged 18+',
                     'Health Data Consent', 'Contact Consent', 'Privacy Notice Version'],
-  'Assessments': ['Timestamp', 'Email', 'Name', 'Age', 'Gender', 'Height (cm)', 'Weight (kg)', 'BMI',
-                  'BMI Category', 'Exercise', 'Diet', 'Sleep', 'Stress', 'Smoker', 'Prescription Medicine',
-                  'Blood Thinner', 'Pregnant/Breastfeeding', 'Fish/Shellfish Allergy', 'Health Areas'],
+  'Assessments': ['Timestamp', 'Email', 'Name', 'Age', 'Sex', 'Height (cm)', 'Weight (kg)', 'BMI', 'BMI Category',
+                  'Lifestyle Level', 'Nutrients To Watch', 'Lifestyle Answers (Yes)', 'Water', 'Sleep', 'Stress', 'Smoker',
+                  'Prescription Medicine', 'Blood Thinner', 'Pregnant/Breastfeeding', 'Allergies',
+                  'Health Conditions', 'Everyday Challenges'],
   'Consultations': ['Timestamp', 'Email', 'Name', 'Phone', 'Wants Consultation', 'Follow-up Status', 'Notes'],
   'Daily Log': ['Date', 'Registrations', 'Assessments', 'Consultation Requests', 'Records Purged', 'Sent At'],
   'Deletion Log': ['Timestamp', 'Reason', 'Rows Deleted']
@@ -147,10 +148,10 @@ function saveAssessment_(d) {
   const email = normaliseEmail_(d.email);
   if (!findRegistration_(email)) return { ok: false, error: 'Please register first.' };
   sheet_(SHEETS.assessments).appendRow([
-    new Date(), email, safe_(d.name), d.age, safe_(d.gender), d.height, d.weight, d.bmi,
-    safe_(d.bmiCategory), safe_(d.exercise), safe_(d.diet), safe_(d.sleep), safe_(d.stress),
-    safe_(d.smoker), safe_(d.prescription), safe_(d.bloodThinner), safe_(d.pregnant), safe_(d.allergy),
-    safe_(d.healthAreas)
+    new Date(), email, safe_(d.name), d.age, safe_(d.gender), d.height, d.weight, d.bmi, safe_(d.bmiCategory),
+    safe_(d.lifestyleLevel), safe_(d.nutrientsToWatch), safe_(d.lifestyleYes), safe_(d.water), safe_(d.sleep), safe_(d.stress),
+    safe_(d.smoker), safe_(d.prescription), safe_(d.bloodThinner), safe_(d.pregnant), safe_(d.allergies),
+    safe_(d.conditions), safe_(d.symptoms)
   ]);
   return { ok: true };
 }
@@ -200,16 +201,18 @@ function sendDailyDigestEmail() {
       table_(['Name', 'Email', 'Phone'], consults.map(function (r) { return [r[2], r[1], r[3]]; }));
   }
   if (assessments.length) {
+    const c = col_('Assessments');
     html += '<h3>Assessments completed</h3>' +
-      table_(['Name', 'Email', 'Age', 'BMI', 'Health areas', 'Safety flags'],
+      table_(['Name', 'Email', 'Age', 'BMI', 'Lifestyle level', 'Nutrients to watch', 'Health conditions', 'Everyday challenges', 'Safety flags'],
         assessments.map(function (r) {
           const flags = [];
-          if (r[14] === 'Yes') flags.push('prescription medicine');
-          if (r[15] === 'Yes' || r[15] === 'Not sure') flags.push('blood thinner: ' + r[15]);
-          if (r[16] === 'Yes') flags.push('pregnant/breastfeeding');
-          if (r[17] && r[17] !== 'None') flags.push('allergy: ' + r[17]);
-          if (r[13] === 'Yes') flags.push('smoker');
-          return [r[2], r[1], r[3], r[7] + ' (' + r[8] + ')', r[18], flags.join('; ') || 'none'];
+          if (r[c['Prescription Medicine']] === 'Yes') flags.push('prescription medicine');
+          if (r[c['Blood Thinner']] === 'Yes' || r[c['Blood Thinner']] === 'Not sure') flags.push('blood thinner: ' + r[c['Blood Thinner']]);
+          if (r[c['Pregnant/Breastfeeding']] === 'Yes') flags.push('pregnant/breastfeeding');
+          if (r[c['Allergies']] && r[c['Allergies']] !== 'None') flags.push('allergies: ' + r[c['Allergies']]);
+          if (r[c['Smoker']] === 'Yes') flags.push('smoker');
+          return [r[c['Name']], r[c['Email']], r[c['Age']], r[c['BMI']] + ' (' + r[c['BMI Category']] + ')', r[c['Lifestyle Level']],
+            r[c['Nutrients To Watch']], r[c['Health Conditions']], r[c['Everyday Challenges']], flags.join('; ') || 'none'];
         }));
   }
   if (regs.length) {
@@ -259,6 +262,13 @@ function deleteRowsForEmails_(emails) {
 }
 
 // ---- Helpers ----
+
+// Column number for each header name, so the digest doesn't break if columns are added
+function col_(sheetName) {
+  const map = {};
+  HEADERS[sheetName].forEach(function (h, i) { map[h] = i; });
+  return map;
+}
 
 function sheet_(name) {
   const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(name);

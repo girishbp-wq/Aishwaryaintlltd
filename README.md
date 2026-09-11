@@ -14,6 +14,8 @@ Live site: https://girishbp-wq.github.io/Aishwaryaintlltd/
 ## How the Health & Nutrition Check works
 
 - Visitors register with explicit consent (18+, health data consent, optional contact consent).
+- The questionnaire has five parts: about you, the 15 questions from the Nutrilite lifestyle assessment sheet (plus water, sleep and stress), health conditions from Dr Strand's book, everyday health challenges (e.g. constipation, bloating, plantar fasciitis), and safety questions.
+- The lifestyle answers are scored with the sheet's grid to give a Level A, B or C for 11 nutrients: vitamin A, B vitamins, vitamin C, vitamin D, vitamin E, calcium, iron, other minerals, protein, omega-3 and fibre.
 - Answers go to a Google Sheet owned by bpg2504@gmail.com through an Apps Script web app. Nothing is stored on GitHub.
 - Results follow chapter 17 of Ray D. Strand, MD, *What Your Doctor Doesn't Know About Nutritional Medicine May Be Killing You* (2002): the basics for everyone, then extras for each health area.
 - Nutrilite UK products are listed first. Anything the book mentions that Nutrilite UK doesn't sell is marked "Buy anywhere".
